@@ -1,0 +1,11 @@
+name: tests
+channels:
+  - conda-forge
+dependencies:
+  - python >= 3.8
+  - pytest
+  - pytest-mock
+  - pytest-cov
+  - pytest-fixture-config
+variables:
+    PIP_DISABLE_PIP_VERSION_CHECK: 1

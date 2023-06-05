@@ -1,0 +1,32 @@
+package:
+  name: ats_linter
+  version: {{ GIT_DESCRIBE_TAG }}
+
+source:
+  git_url: https://github.com/aydabd/ats-linter.git
+
+build:
+  number: 0
+  noarch: python
+  script:
+    - python -m pip install --no-deps --ignore-installed .
+  entry_points:
+    - ats-linter = ats_linter.cli:run
+
+requirements:
+  host:
+    - pip
+    - python >=3.8
+  run:
+    - python >=3.8
+
+about:
+  home: https://github.com/aydabd/ats-linter.git
+  license: MIT
+  summary: A package/library for linting test schema.
+  dev_url: https://github.com/aydabd/ats-linter
+  doc_url: https://readthedocs.org/projects/ats-linter/
+
+extra:
+    recipe-maintainer:
+        - Aydin Abdi<aydina@axis.com>

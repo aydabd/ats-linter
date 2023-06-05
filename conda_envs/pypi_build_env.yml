@@ -1,0 +1,8 @@
+name: pypi_build
+channels:
+  - conda-forge
+dependencies:
+  - python >=3.8
+  - pip
+  - build
+  - setuptools_scm

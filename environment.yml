@@ -1,0 +1,11 @@
+name: docs-sandbox
+channels:
+  - conda-forge
+dependencies:
+  - python >= 3.8
+  - openjdk
+  - sphinx
+  - sphinx_rtd_theme
+  - sphinxcontrib-confluencebuilder
+  - pip:
+    - sphinxcontrib-plantuml
