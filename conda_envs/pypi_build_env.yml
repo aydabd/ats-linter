@@ -6,3 +6,5 @@ dependencies:
   - pip
   - build
   - setuptools_scm
+variables:
+  PIP_DISABLE_PIP_VERSION_CHECK: 1

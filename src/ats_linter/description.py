@@ -1,4 +1,4 @@
-""" Copyright (c) 2023 Aydin Abdi.
+""" Copyright (c) 2023 Aydin Abdi
 
 This module encapsulates the logic of parsing test case test descriptions.
 """

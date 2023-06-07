@@ -102,7 +102,7 @@ Create an environment
    or for ``Windows`` just double-click the ``.exe`` file and follow the instructions on the screen.
    For fast installation on linux use these commands,
    for more info check
-   `miniconda installation guide <https://docs.anaconda.com/anaconda-repository/2.24/admin/install/#install-miniconda>`_::
+   `miniconda installation guide <https://conda.io/projects/conda/en/stable/user-guide/install/index.html>`_::
 
     curl 'https://repo.anaconda.com/miniconda/Miniconda-latest-Linux-x86_64.sh' > Miniconda.sh
     bash Miniconda.sh

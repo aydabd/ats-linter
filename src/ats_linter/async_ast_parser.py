@@ -10,7 +10,7 @@ from typing import List, Optional
 
 from loguru import logger
 
-from ats_linter.test_data_classes import TestModule, TestCase, PytestFixture
+from ats_linter.data_classes import TestModule, TestCase, PytestFixture
 from ats_linter.ast_test_module_factory import (
     PY_EXTENSION,
     TEST_PREFIX,

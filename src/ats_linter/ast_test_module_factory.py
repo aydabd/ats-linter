@@ -11,7 +11,7 @@ import ast
 from dataclasses import dataclass
 from typing import Callable, List, Sequence
 
-from ats_linter.test_data_classes import Entity, TestClass, TestCase, PytestFixture
+from ats_linter.data_classes import Entity, TestClass, TestCase, PytestFixture
 
 TEST_PREFIX = "test_"
 TEST_CLASS_PREFIX = "Test"

@@ -8,5 +8,3 @@ dependencies:
   - pytest-cov
   - pytest-fixture-config
   - tox
-variables:
-    PIP_DISABLE_PIP_VERSION_CHECK: 1

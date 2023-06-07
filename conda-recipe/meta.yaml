@@ -1,9 +1,16 @@
+# Maintainer: Aydin Abdi<
+# Homepage:
+# License: MIT
+# Summary: A package/library for linting test schema.
+# Doc URL: https://readthedocs.org/projects/ats-linter/
+
 package:
-  name: ats_linter
-  version: {{ GIT_DESCRIBE_TAG }}
+  name: ats-linter
+  version: {{ environ.get('GIT_DESCRIBE_TAG', '0.0.0') }}
 
 source:
   git_url: https://github.com/aydabd/ats-linter.git
+  git_rev: {{ environ.get('GIT_DESCRIBE_TAG', '0.0.0') }}
 
 build:
   number: 0
@@ -20,6 +27,10 @@ requirements:
   run:
     - python >=3.8
 
+test:
+  imports:
+    - ats_linter
+
 about:
   home: https://github.com/aydabd/ats-linter.git
   license: MIT
@@ -28,5 +39,5 @@ about:
   doc_url: https://readthedocs.org/projects/ats-linter/
 
 extra:
-    recipe-maintainer:
-        - Aydin Abdi<aydina@axis.com>
+  recipe-maintainer:
+    - Aydin Abdi<ayd.abd@gmail.com>

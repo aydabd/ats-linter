@@ -81,7 +81,6 @@ class TestExample2:
         pass
 
 
-@pytest.mark.parametrized(1, 2, 3)
 def test_case_example():
     """
     Objective:

@@ -11,8 +11,8 @@ from typing import Any, Dict, List
 
 from loguru import logger
 
-from ats_linter.test_data_classes import Section, TestCase
-from ats_linter.test_description import (
+from ats_linter.data_classes import Section, TestCase
+from ats_linter.description import (
     TestDescription,
     SECTION_OBJECTIVE,
     SECTION_APPROVALS,
