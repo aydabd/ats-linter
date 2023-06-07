@@ -1,12 +1,10 @@
-import pytest
 from ats_linter.file_collector import FileCollector, PYTHON_FILE_EXTENSION
 from pathlib import Path
 
 
-
 def test_post_init(file_collector: FileCollector, tmp_path) -> None:
     """
-    Test that the __post_init__ method correctly initializes a FileCollector object with test directories and files.
+    Test that the __post_init__ method correctly initializes a FileCollector.
     """
     expected_test_files = 3
     expected_test_directories = 2
@@ -15,7 +13,7 @@ def test_post_init(file_collector: FileCollector, tmp_path) -> None:
 
     test_file = tmp_path / "test_file.py"
     test_file.write_text("print('hello world')")
-    
+
     file_collector = FileCollector(str(test_file))
 
     assert len(file_collector.test_files) == 1
@@ -24,7 +22,8 @@ def test_post_init(file_collector: FileCollector, tmp_path) -> None:
 
 def test_get_path_from_string() -> None:
     """
-    Test that the get_path_from_string method correctly converts a string path to a Path object.
+    Test that the get_path_from_string method correctly
+    converts a string path to a Path object.
     """
     input_path_string = "test_path"
     path = FileCollector.get_path_from_string(input_path_string)
@@ -43,7 +42,11 @@ def test_is_test_file(mock_files: Path) -> None:
     assert FileCollector.is_test_file(non_test_file) is False
 
 
-def test_is_test_directory(test_directory: Path, non_test_directory: Path, non_test_directory_with_test_prefix: Path) -> None:
+def test_is_test_directory(
+    test_directory: Path,
+    non_test_directory: Path,
+    non_test_directory_with_test_prefix: Path,
+) -> None:
     """
     Test the `is_test_directory` method of the `FileCollector` class.
     """
@@ -53,33 +56,49 @@ def test_is_test_directory(test_directory: Path, non_test_directory: Path, non_t
     # Check if the non-test directory is recognized as a non-test directory
     assert not FileCollector.is_test_directory(non_test_directory)
 
-    # Check if the directory with test prefix but without any test file is recognized as a non-test directory
+    # Check if the directory with test prefix
+    # but without any test file is recognized as a non-test directory
     assert not FileCollector.is_test_directory(non_test_directory_with_test_prefix)
-    
+
 
 def test_process_directory(mock_files: Path) -> None:
     """
-    Test that the process_directory method correctly processes a directory and returns it if it is a test directory.
+    Test that the process_directory method correctly processes
+    a directory and returns it if it is a test directory.
     """
     test_dir = mock_files / "test_dir1"
     non_test_dir = mock_files / "dir3"
-    expected_test_dir_result = (test_dir, list(test_dir.glob(f"*{PYTHON_FILE_EXTENSION}")))
+    expected_test_dir_result = (
+        test_dir,
+        list(test_dir.glob(f"*{PYTHON_FILE_EXTENSION}")),
+    )
     expected_non_test_dir_result = (None, [])
     assert FileCollector.process_directory(test_dir) == expected_test_dir_result
     assert FileCollector.process_directory(non_test_dir) == expected_non_test_dir_result
 
 
-def test_collect_test_directories_and_files_in_parallel(mocker, mock_files: Path, file_collector: FileCollector) -> None:
+def test_collect_test_directories_and_files_in_parallel(
+    mocker, mock_files: Path, file_collector: FileCollector
+) -> None:
     """
-    Test that the collect_test_directories_and_files_in_parallel method correctly collects all test directories and files in parallel.
+    Test that the collect_test_directories_and_files_in_parallel method correctly
+    collects all test directories and files in parallel.
     """
     expected_directory_files = [
-        (mock_files / "test_dir1", [mock_files / "test_dir1" / "test_file1.py", mock_files / "test_dir1" / "test_file2.py"]),
+        (
+            mock_files / "test_dir1",
+            [
+                mock_files / "test_dir1" / "test_file1.py",
+                mock_files / "test_dir1" / "test_file2.py",
+            ],
+        ),
         (mock_files / "test_dir2", [mock_files / "test_dir2" / "test_file3.py"]),
-        (None, [])
+        (None, []),
     ]
-    mocker.patch.object(FileCollector, "process_directory", side_effect=expected_directory_files)
-    
+    mocker.patch.object(
+        FileCollector, "process_directory", side_effect=expected_directory_files
+    )
+
     # Reset test_files before collecting
     file_collector.test_files = []
     file_collector.test_directories = []
@@ -114,12 +133,14 @@ def test_root_file_path_is_file(file_collector: FileCollector) -> None:
     """
     assert len(file_collector.test_files) == 3
 
+
 def test_root_file_path_does_not_exist() -> None:
     """
     Test when the root_file_path does not exist.
     """
     fc = FileCollector("non_existent_path")
     assert len(fc.test_files) == 0
+
 
 # def test_non_existing_path():
 #     collector = FileCollector("non_existing_path")
@@ -142,6 +163,7 @@ def test_root_file_path_does_not_exist() -> None:
 #     collector = FileCollector("path_to_test_directory")
 #     assert len(collector.test_files) == 0
 #     assert len(collector.test_directories) == 0
+
 
 def test_dict_method(file_collector: FileCollector):
     """Test the __dict__ method."""

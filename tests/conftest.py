@@ -1,4 +1,3 @@
-
 import pytest
 from pathlib import Path
 
@@ -7,8 +6,8 @@ from ats_linter.file_collector import FileCollector
 
 @pytest.fixture
 def file_collector(mock_files: Path) -> FileCollector:
-    """A pytest fixture that returns a FileCollector object 
-    
+    """A pytest fixture that returns a FileCollector object
+
     initialized with the mock files.
     """
     print("Setup: Initializing a FileCollector object.")
@@ -72,11 +71,11 @@ def non_test_directory(tmp_path: Path) -> Path:
 @pytest.fixture
 def non_test_directory_with_test_prefix(tmp_path: Path) -> Path:
     """Creates a directory with a test prefix, but without any test files."""
-    non_test_directory_with_test_prefix = (
-        tmp_path / "test_directory_without_test_file"
-    )
+    non_test_directory_with_test_prefix = tmp_path / "test_directory_without_test_file"
     non_test_directory_with_test_prefix.mkdir()
-    non_test_file_in_test_prefix_dir = non_test_directory_with_test_prefix / "non_test_file.py"
+    non_test_file_in_test_prefix_dir = (
+        non_test_directory_with_test_prefix / "non_test_file.py"
+    )
     non_test_file_in_test_prefix_dir.write_text("print('hello world')")
     yield non_test_directory_with_test_prefix
     # Teardown/cleanup code goes here
