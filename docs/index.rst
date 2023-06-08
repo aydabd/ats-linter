@@ -17,7 +17,7 @@ Version
    :alt: pre-commit
 
 .. image:: _static/badges/sphinx_badge.svg
-   :target: https://www.sphinx-doc.org
+   :target: https://www.sphinx-doc.org/en/master/
    :alt: Build by Sphinx
 
 

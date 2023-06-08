@@ -24,17 +24,14 @@ concurrency:
 
 jobs:
   prepare:
-    name: Prepare on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: Lints and test document on linux
+    runs-on: ubuntu-latest
     outputs:
-      python-path: ${{ steps.setup-python.outputs.python-path }}
-      wheel-distribution: ${{ steps.wheel-distribution.outputs.path }}
       docs-path: ${{ steps.build-docs.outputs.docs-path }}
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
-        python-version: [3.8, 3.9, 3.10, 3.11]
+        tox-envs: [docs, doctests, linkcheck, lint]
 
     steps:
     - name: Checkout code
@@ -44,28 +41,94 @@ jobs:
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v2
       with:
-        auto-update-conda: true
+        channels: conda-forge
+        miniconda-version: "latest"
         auto-activate-base: true
-        python-version: ${{ matrix.python-version }}
-      run: |
-        conda config --set always_yes yes --set changeps1 no
-        conda info -a
-        conda install -c conda-forge tox tox-conda
+        conda-packages: tox
+        python-version: 3.11
 
-    - name: Run static analysis and format checkers
-      shell: bash
-      run: tox -p auto
+    - name: Run static analysis, format checkers and documentation tests
+      shell: bash -l {0}
+      run: |
+        tox -e ${{ matrix.tox-envs }}
+
+  test:
+    name: Unit tests on linux
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tox-envs: [py38, py39, py310, py311]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with: {fetch-depth: 0}  # deep clone for setuptools-scm
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          channels: conda-forge
+          miniconda-version: "latest"
+          auto-activate-base: false
+
+      - name: Run unit tests
+        shell: bash -l {0}
+        run: |
+          conda install tox
+          tox -e ${{ matrix.tox-envs }}
+
+  build:
+    needs: prepare
+    name: Build on linux
+    runs-on: ubuntu-latest
+    outputs:
+      python-path: ${{ steps.setup-python.outputs.python-path }}
+      wheel-distribution: ${{ steps.wheel-distribution.outputs.path }}
+    strategy:
+      fail-fast: false
+      matrix:
+        tox-envs: [build]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with: {fetch-depth: 0}  # deep clone for setuptools-scm
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          channels: conda-forge
+          miniconda-version: "latest"
+          auto-activate-base: false
+
+      - name: Build package
+        shell: bash -l {0}
+        run: |
+          conda install tox
+          tox -e ${{ matrix.tox-envs }}
+
+      - name: Upload distribution files
+        uses: actions/upload-artifact@v2
+        with:
+          name: python-distribution-files
+          path: dist/
 
   publish:
+    needs: build
     name: Publish on PyPI
     if: ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags/') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with: {python-version: "3.11"}
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          channels: conda-forge
+          miniconda-version: "latest"
+          auto-activate-base: false
+          python-version: 3.11
       - name: Retrieve pre-built distribution files
         uses: actions/download-artifact@v3
         with: {name: python-distribution-files, path: dist/}
@@ -77,4 +140,28 @@ jobs:
           TWINE_REPOSITORY: pypi
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: pipx run tox -e publish
+        shell: bash -l {0}
+        run: |
+          conda install tox
+          tox -e publish
+
+  deploy:
+    needs: publish
+    name: Deploy on Anaconda
+    if: ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          channels: conda-forge
+          auto-update-conda: false
+          auto-activate-base: false
+          python-version: 3.11
+      - name: Deploy Package
+        shell: bash -l {0}
+        run: |
+          conda install tox
+          tox -e conda-package

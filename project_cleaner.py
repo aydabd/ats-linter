@@ -8,11 +8,6 @@ from pathlib import Path
 import shutil
 from typing import List, Set
 
-from loguru import logger
-
-# for logging comment this line
-# logger.disable(__name__)
-
 # Usage
 TMP_DIRECTORIES = [
     "_build",
@@ -149,7 +144,10 @@ class ProjectCleaner:
                 exclude_path in str(parent) for parent in p.parents
             ):
                 continue
-            directories.add(p)
+            if p.is_dir() and p.name in self.directories_to_remove:
+                print(f"Removing directory: {p}")
+                directories.add(p)
+
         return directories
 
     async def remove_files_async(self, files: Set[Path]):
@@ -167,7 +165,6 @@ if __name__ == "__main__":
         cleaner = ProjectCleaner(TMP_DIRECTORIES, FILE_EXTENSIONS)
         asyncio.run(cleaner.clean())
     except Exception as e:
-        logger.debug(f"Error while cleaning project: {e}")
-
-    logger.info("'.tox' directory is not removed, please remove it manually if needed")
-    logger.info("Project cleaned successfully!")
+        print(f"Error while cleaning project: {e}")
+    else:
+        print("Project cleaned successfully!")

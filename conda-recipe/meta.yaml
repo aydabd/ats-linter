@@ -1,16 +1,16 @@
-# Maintainer: Aydin Abdi<
-# Homepage:
-# License: MIT
-# Summary: A package/library for linting test schema.
-# Doc URL: https://readthedocs.org/projects/ats-linter/
+{% set name = "ats-linter" %}
+{% set version = environ.get('GIT_DESCRIBE_TAG', '0.0.0') %}
+{% set url = "https://github.com/aydabd/ats-linter.git" %}
+{% set license = "MIT" %}
+{% set author = "aydin.a" %}
 
 package:
-  name: ats-linter
-  version: {{ environ.get('GIT_DESCRIBE_TAG', '0.0.0') }}
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
-  git_url: https://github.com/aydabd/ats-linter.git
-  git_rev: {{ environ.get('GIT_DESCRIBE_TAG', '0.0.0') }}
+  git_url: {{ url }}
+  git_rev: {{ version }}
 
 build:
   number: 0
@@ -32,12 +32,13 @@ test:
     - ats_linter
 
 about:
-  home: https://github.com/aydabd/ats-linter.git
-  license: MIT
+  home: {{ url }}
+  license: {{ license }}
+  license_file: LICENSE.txt
   summary: A package/library for linting test schema.
   dev_url: https://github.com/aydabd/ats-linter
-  doc_url: https://readthedocs.org/projects/ats-linter/
+  doc_url: https://ats-linter.readthedocs.io/en/latest/
 
 extra:
   recipe-maintainer:
-    - Aydin Abdi<ayd.abd@gmail.com>
+    - {{ author }}

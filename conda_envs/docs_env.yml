@@ -1,8 +1,0 @@
-name: docs
-channels:
-  - conda-forge
-dependencies:
-  - python >= 3.8
-  - sphinx
-  - sphinx_rtd_theme
-  - sphinx-autodoc-typehints

@@ -6,8 +6,7 @@ requires = [
 ]
 
 [tool.setuptools_scm]
-
-version_scheme = "no-guess-dev"
+version_scheme = "post-release"
 
 [project]
 name = "ats-linter"

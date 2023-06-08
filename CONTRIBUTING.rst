@@ -323,7 +323,7 @@ on PyPI_, the following steps can be used to release a new version for
 .. _conda-forge: https://conda-forge.org
 .. _creating a PR: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request
 .. _dev_env.yml: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#creating-an-environment-from-an-environment-yml-file
-.. _descriptive commit message: https://chris.beams.io/posts/git-commit
+.. _descriptive commit message: https://cbea.ms/git-commit/
 .. _docstrings: https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html
 .. _first-contributions tutorial: https://github.com/firstcontributions/first-contributions
 .. _flake8: https://flake8.pycqa.org/en/stable/

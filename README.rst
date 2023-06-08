@@ -30,17 +30,18 @@ Install with ``pip`` or ``conda``::
    # Or install as conda package(recommended)
    conda install ats-linter
 
+
 How To Start ats-linter
 -----------------------
 
 Check `installation-guide`_.
 
-.. _ATS-Linter : https://readthedocs.org/projects/ats-linter/
+.. _ATS-Linter : https://ats-linter.readthedocs.io/en/latest/
 .. _pypi: https://pypi.org/project/pip/ats-linter
 .. _pip: https://pip.pypa.io/en/stable/installing/
 .. _conda-forge: https://anaconda.org/conda-forge/ats-linter
 .. _conda: https://conda.io/projects/conda/en/stable/user-guide/install/index.html
 .. _venv: https://docs.python.org/3/library/venv.html
-.. _Miniconda: https://conda.io/miniconda.html
-.. _installation-guide: https://ats-linter.readthedocs.io/en/latest/installation.html
+.. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
+.. _installation-guide: https://ats-linter.readthedocs.io/en/latest/
 .. _pre-commit: https://pre-commit.com/

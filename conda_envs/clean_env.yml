@@ -1,7 +1,0 @@
-name: clean
-channels:
-  - conda-forge
-dependencies:
-  - python >= 3.8
-  - aiofiles
-  - loguru
