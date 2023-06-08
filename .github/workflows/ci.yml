@@ -79,7 +79,7 @@ jobs:
           tox -e ${{ matrix.tox-envs }}
 
   build:
-    needs: prepare
+    needs: prepare, test
     name: Build on linux
     runs-on: ubuntu-latest
     outputs:

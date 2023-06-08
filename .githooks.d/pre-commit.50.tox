@@ -9,7 +9,7 @@ function test {
     return $status
 }
 test .githooks.d/install_deps >&2
-python3 -m tox -p auto -e lint,py39
+python -m tox -p auto -e lint,py39
 
 status=$?
 if [ $status -ne 0 ]; then
