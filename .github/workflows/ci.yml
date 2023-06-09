@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, 3.10, 3.11.3]
+        python-version: [3.8, 3.9, 3.10.12, 3.11.3]
     defaults:
       run:
         shell: bash -el {0}
@@ -69,8 +69,6 @@ jobs:
       - name: Run unit tests {{ matrix.python-version }}
         run: |
           pip install tox
-          which python
-          which tox
           tox
 
   build:
@@ -133,7 +131,6 @@ jobs:
         run: |
           pip install tox
           tox -e publish
-
   deploy:
     needs: publish
     name: Deploy to Anaconda
@@ -154,4 +151,4 @@ jobs:
       - name: Deploy Package To conda-forge
         run: |
           conda install conda-build conda-verify
-          conda-build
+          conda build conda-recipe
