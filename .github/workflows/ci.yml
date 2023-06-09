@@ -33,19 +33,15 @@ jobs:
       matrix:
         tox-envs: [docs, doctests, linkcheck, lint]
     defaults:
-      run:
+      run: 
         shell: bash -el {0}
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
       with: {fetch-depth: 0}  # deep clone for setuptools-scm
-
     - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: 3.11
-
-    - name: Install tox and start tox with ${{ matrix.tox-envs }}
+      uses: actions/setup-python@v4
+    - name: Run tox env ${{ matrix.tox-envs }}
       run: |
         pip install tox
         tox -e ${{ matrix.tox-envs }}
@@ -56,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, 3.10, 3.11]
+        python-version: [3.8, 3.9, 3.10, 3.11.3]
     defaults:
       run:
         shell: bash -el {0}
@@ -65,12 +61,12 @@ jobs:
         uses: actions/checkout@v3
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
+      - name: Set up Python {{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Run unit tests
+      - name: Run unit tests {{ matrix.python-version }}
         run: |
           pip install tox
           which python
@@ -97,9 +93,7 @@ jobs:
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
 
       - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.11 
+        uses: actions/setup-python@v4
 
       - name: Build package
         run: |
@@ -124,9 +118,7 @@ jobs:
         shell: bash -el {0}
     steps:
       - name: Set up Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.11
+        uses: actions/setup-python@v4
       - name: Retrieve pre-built distribution files
         uses: actions/download-artifact@v3
         with: {name: python-distribution-files, path: dist/}
