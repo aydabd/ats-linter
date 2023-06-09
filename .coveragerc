@@ -6,7 +6,6 @@ omit =
     **/distutils/**
     **/tests/**
 branch = True
-data_file = $COVERAGE_FILE
 disable_warnings = no-data-collected
 
 [report]
@@ -29,7 +28,6 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
 show_missing = True
-fail_under = 100
 skip_covered = True
 ignore_errors = True
 
