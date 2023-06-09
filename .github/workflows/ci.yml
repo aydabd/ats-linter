@@ -45,10 +45,9 @@ jobs:
         miniconda-version: "latest"
         auto-activate-base: false
         activate-environment: test-env
-        python-version: 3.11
+        python-version: "latest"
 
     - name: Install tox and start tox with ${{ matrix.tox-envs }}
-      shell: bash -l {0}
       run: |
         conda install tox
         tox -e ${{ matrix.tox-envs }}
@@ -59,7 +58,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tox-envs: [py38, py39, py310, py311]
         python-version: [3.8, 3.9, 3.10, 3.11]
 
     steps:
@@ -77,12 +75,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Run unit tests
-        shell: bash -l {0}
         run: |
           conda install tox
           which python
           which tox
-          tox -e ${{ matrix.tox-envs }}
+          tox
 
   build:
     needs: [prepare, test]
@@ -109,10 +106,9 @@ jobs:
           auto-activate-base: true
 
       - name: Build package
-        shell: bash -l {0}
         run: |
           conda install tox
-          tox -e ${{ matrix.tox-envs }}
+          tox
 
       - name: Upload distribution files
         uses: actions/upload-artifact@v2
@@ -146,7 +142,6 @@ jobs:
           TWINE_REPOSITORY: pypi
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        shell: bash -l {0}
         run: |
           conda install tox
           tox -e publish
@@ -167,7 +162,6 @@ jobs:
           auto-activate-base: true
           python-version: 3.11
       - name: Deploy Package
-        shell: bash -l {0}
         run: |
           conda install tox
           tox -e conda-package
