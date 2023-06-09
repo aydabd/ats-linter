@@ -9,6 +9,7 @@ parallel = True
 concurrency = multiprocessing
 branch = True
 data_file = $COVERAGE_FILE
+ignore_errors = True
 
 [paths]
 source =
