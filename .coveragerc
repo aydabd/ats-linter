@@ -7,6 +7,7 @@ omit =
     **/tests/**
 branch = True
 data_file = $COVERAGE_FILE
+disable_warnings = no-data-collected
 
 [report]
 omit =
@@ -31,7 +32,6 @@ show_missing = True
 fail_under = 100
 skip_covered = True
 ignore_errors = True
-disable_warnings = no-data-collected
 
 [html]
 directory = ${COVERAGE_FILE}_html
