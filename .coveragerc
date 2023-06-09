@@ -38,6 +38,7 @@ skip_covered = True
 
 [html]
 directory = coverage_html_report
+output = $COVERAGE_FILE.html
 
 [junit]
-output = coverage.xml
+output = $COVERAGE_FILE.xml
