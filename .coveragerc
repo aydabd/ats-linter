@@ -5,16 +5,12 @@ omit =
     **/site-packages/**
     **/distutils/**
     **/tests/**
-parallel = True
-concurrency = multiprocessing
 branch = True
 data_file = $COVERAGE_FILE
 
-[paths]
-source =
-    src/*
-
 [report]
+omit =
+    tests/*
 # Regexes for lines to exclude from consideration
 exclude_lines =
     # Have to re-enable the standard pragma
@@ -32,9 +28,10 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
 show_missing = True
-fail_under = 80
+fail_under = 100
 skip_covered = True
 ignore_errors = True
+disable_warnings = no-data-collected
 
 [html]
 directory = ${COVERAGE_FILE}_html
