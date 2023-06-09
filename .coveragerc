@@ -32,13 +32,14 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
 
+show = True
 show_missing = True
 fail_under = 80
 skip_covered = True
 ignore_errors = True
 
 [html]
-directory = $COVERAGE_FILE_html
+directory = ${COVERAGE_FILE}_html
 
 [junit]
-output = $COVERAGE_FILE.xml
+output = ${COVERAGE_FILE}.xml
