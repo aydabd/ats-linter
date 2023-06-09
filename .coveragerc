@@ -37,8 +37,7 @@ fail_under = 80
 skip_covered = True
 
 [html]
-directory = coverage_html_report
-output = $COVERAGE_FILE.html
+directory = $COVERAGE_FILE_html
 
 [junit]
 output = $COVERAGE_FILE.xml
