@@ -1,13 +1,18 @@
 # .coveragerc to control coverage.py
 [run]
-branch = True
 source = ats_linter
-# omit = bad_file.py
+omit =
+    */site-packages/*
+    */distutils/*
+    tests/*
+parallel = True
+concurrency = multiprocessing
+branch = True
+data_file = $COVERAGE_FILE
 
 [paths]
 source =
     src/
-    */site-packages/
 
 [report]
 # Regexes for lines to exclude from consideration
@@ -26,3 +31,13 @@ exclude_lines =
     # Don't complain if non-runnable code isn't run:
     if 0:
     if __name__ == .__main__.:
+
+show_missing = True
+fail_under = 80
+skip_covered = True
+
+[html]
+directory = coverage_html_report
+
+[junit]
+output = coverage.xml
