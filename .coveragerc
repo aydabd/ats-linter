@@ -9,7 +9,6 @@ parallel = True
 concurrency = multiprocessing
 branch = True
 data_file = $COVERAGE_FILE
-ignore_errors = True
 
 [paths]
 source =
@@ -36,6 +35,7 @@ exclude_lines =
 show_missing = True
 fail_under = 80
 skip_covered = True
+ignore_errors = True
 
 [html]
 directory = $COVERAGE_FILE_html
