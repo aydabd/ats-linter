@@ -1,12 +1,13 @@
 # .coveragerc to control coverage.py
 [run]
-source = ats_linter
+source = src/ats_linter
 omit =
     **/site-packages/**
     **/distutils/**
     **/tests/**
 branch = True
 disable_warnings = no-data-collected
+data_file = $COVERAGE_FILE
 
 [report]
 omit =
