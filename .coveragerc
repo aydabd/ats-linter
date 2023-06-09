@@ -2,9 +2,9 @@
 [run]
 source = ats_linter
 omit =
-    */site-packages/*
-    */distutils/*
-    */tests/*
+    **/site-packages/**
+    **/distutils/**
+    **/tests/**
 parallel = True
 concurrency = multiprocessing
 branch = True
