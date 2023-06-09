@@ -10,6 +10,7 @@ disable_warnings = no-data-collected
 data_file = $COVERAGE_FILE
 
 [report]
+fail_under = 100
 omit =
     tests/*
 # Regexes for lines to exclude from consideration
