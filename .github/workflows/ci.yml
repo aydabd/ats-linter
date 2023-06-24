@@ -1,0 +1,154 @@
+name: Python package CI/CD with Miniconda and Tox
+
+on:
+  push:
+    # Avoid using all the resources/limits available by checking only
+    # relevant branches and tags. Other branches can be checked via PRs.
+    branches: [main]
+    tags: ['v[0-9]*', '[0-9]+.[0-9]+*']  # Match tags that resemble a version
+  pull_request:  # Run in every PR
+  workflow_dispatch:  # Allow manually triggering the workflow
+  schedule:
+    # Run roughly every 15 days at 00:00 UTC
+    # (useful to check if updates on dependencies break the package)
+    - cron: '0 0 1,16 * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: >-
+    ${{ github.workflow }}-${{ github.ref_type }}-
+    ${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Lints and test document on linux
+    runs-on: ubuntu-latest
+    outputs:
+      docs-path: ${{ steps.build-docs.outputs.docs-path }}
+    strategy:
+      fail-fast: false
+      matrix:
+        tox-envs: [docs, doctests, linkcheck, lint]
+    defaults:
+      run: 
+        shell: bash -el {0}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with: {fetch-depth: 0}  # deep clone for setuptools-scm
+    - name: Set up Python
+      uses: actions/setup-python@v4
+    - name: Run tox env ${{ matrix.tox-envs }}
+      run: |
+        pip install tox
+        tox -e ${{ matrix.tox-envs }}
+
+  test:
+    name: Unit tests on linux
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9, 3.10.12, 3.11.3]
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with: {fetch-depth: 0}  # deep clone for setuptools-scm
+
+      - name: Set up Python {{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run unit tests {{ matrix.python-version }}
+        run: |
+          pip install tox
+          tox
+
+  build:
+    needs: [prepare, test]
+    name: Build on linux
+    runs-on: ubuntu-latest
+    outputs:
+      python-path: ${{ steps.setup-python.outputs.python-path }}
+      wheel-distribution: ${{ steps.wheel-distribution.outputs.path }}
+    strategy:
+      fail-fast: false
+      matrix:
+        tox-envs: [build]
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with: {fetch-depth: 0}  # deep clone for setuptools-scm
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - name: Build package
+        run: |
+          pip install tox
+          tox -e build
+
+      - name: Upload distribution files
+        uses: actions/upload-artifact@v2
+        with:
+          name: python-distribution-files
+          path: dist/
+
+  publish:
+    needs: build
+    name: Publish on PyPI
+    if: ${{ github.event_name == 'push' && contains(github.ref, 'refs/tags/') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v4
+      - name: Retrieve pre-built distribution files
+        uses: actions/download-artifact@v3
+        with: {name: python-distribution-files, path: dist/}
+      - name: Publish Package
+        env:
+          # TODO: Set your PYPI_TOKEN as a secret using GitHub UI
+          # - https://pypi.org/help/#apitoken
+          # - https://docs.github.com/en/actions/security-guides/encrypted-secrets
+          TWINE_REPOSITORY: pypi
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          pip install tox
+          tox -e publish
+  deploy:
+    needs: publish
+    name: Deploy to Anaconda
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          channels: conda-forge
+          auto-update-conda: false
+          auto-activate-base: true
+          python-version: 3.11
+      - name: Deploy Package To conda-forge
+        run: |
+          conda install conda-build conda-verify
+          conda build conda-recipe

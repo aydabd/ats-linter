@@ -1,0 +1,13 @@
+#!/bin/bash
+CONDA_ENVS=$(conda info)
+if [ $? -ne 0 ]; then
+    echo "[ERROR] Please install Miniconda and create the 'ats_linter' environment."
+    echo "[INFO] Check the ats-linter documentation for how to install it."
+    exit 1
+fi
+
+CONDA_ENV=$(conda info | awk 'NR==2{print $4}')
+if [ $CONDA_ENV == "None" ]; then
+    echo "[ERROR] Please provide a valid virtual environment(conda). For a list of valid virtual environment, please see conda env list."
+    exit 1
+fi
