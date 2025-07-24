@@ -32,10 +32,10 @@ repos:
   - id: isort
 
 - repo: https://github.com/psf/black
-  rev: 23.3.0
+  rev: 25.1.0
   hooks:
   - id: black
-    language_version: python3
+    language_version: python3.11
 
 - repo: https://github.com/asottile/blacken-docs
   rev: 1.13.0
@@ -55,7 +55,7 @@ repos:
   - id: codespell
 
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: 3.2.2 # automatically updated by Commitizen
+  rev: v3.2.2 # automatically updated by Commitizen
   hooks:
   - id: commitizen
     additional_dependencies: [commitizen==2.21.0]
