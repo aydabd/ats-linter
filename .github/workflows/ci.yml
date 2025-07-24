@@ -33,7 +33,7 @@ jobs:
       matrix:
         tox-envs: [docs, doctests, linkcheck, lint]
     defaults:
-      run: 
+      run:
         shell: bash -el {0}
     steps:
     - name: Checkout code
@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.8, 3.9, 3.10.12, 3.11.3]
+        python-version: [3.11, 3.12, 3.13]
     defaults:
       run:
         shell: bash -el {0}
@@ -147,7 +147,7 @@ jobs:
           channels: conda-forge
           auto-update-conda: false
           auto-activate-base: true
-          python-version: 3.11
+          python-version: 3.13
       - name: Deploy Package To conda-forge
         run: |
           conda install conda-build conda-verify

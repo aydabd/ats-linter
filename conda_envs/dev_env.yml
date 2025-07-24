@@ -2,7 +2,7 @@ name: ats-linter-dev
 channels:
   - conda-forge
 dependencies:
-  - python >= 3.8
+  - python >= 3.11
   - pytest
   - pytest-mock
   - pytest-cov
