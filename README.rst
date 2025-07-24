@@ -32,6 +32,11 @@ Install with ``pip`` or ``conda``::
    # Or install as conda package(recommended)
    conda install ats-linter
 
+For development, install additional requirements and the package in editable mode::
+
+   pip install -r requirements-dev.txt
+   pip install -e .
+
 
 How To Start ats-linter
 -----------------------

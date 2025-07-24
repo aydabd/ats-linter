@@ -4,6 +4,7 @@ Module to lint test files.
 
 This module provides a class to lint test files.
 """
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass, field
 from threading import Lock
@@ -13,12 +14,12 @@ from loguru import logger
 
 from ats_linter.data_classes import Section, TestCase
 from ats_linter.description import (
-    TestDescription,
-    SECTION_OBJECTIVE,
     SECTION_APPROVALS,
-    SECTION_PRECONDITIONS,
     SECTION_DATA_DRIVEN_TEST,
+    SECTION_OBJECTIVE,
+    SECTION_PRECONDITIONS,
     SECTION_TEST_STEPS,
+    TestDescription,
 )
 
 # Comment out to enable logging
@@ -52,7 +53,7 @@ class ATSTestCase:
     def __post_init__(self):
         """Post init method to parse docstring and create sections."""
         self.test_description = TestDescription(self.test_case.docstring)
-        logger.debug(f"ATS test description:{self.test_description}")
+        logger.debug(f"ATS test description: {self.test_description}")
 
     def __dict__(self) -> Dict[str, Any]:
         """Return the ATS test description as a dict.
@@ -251,7 +252,7 @@ class LintTestCase:
         if failed_sections:
             logger.error(
                 f"Test case '{self.test_case.name}' "
-                f"failed linting for the following reasons:"
+                "failed linting for the following reasons:"
             )
             logger.error(
                 "\n".join(
@@ -332,7 +333,7 @@ class ATSTestCasesLinter:
             True if the test case passes linting, False otherwise.
         """
         try:
-            lint_result = ATSTestCasesLinter(ats_test_case).lint()
+            lint_result = LintTestCase(ats_test_case).lint()
 
             # Ensure that the dictionary is accessed in a thread-safe manner
             with lock:

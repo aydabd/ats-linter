@@ -2,9 +2,10 @@
 
 Cli is the command line interface for the linter.
 """
+
 from loguru import logger
 
-from ats_linter.linter import ATSTestCasesLinter
+from ats_linter.linter import ATSTestCasesFactory, ATSTestCasesLinter
 from ats_linter.parallel_process import FileProcessorCocurrent
 
 # Uncomment this line to enable debug logging.
@@ -20,18 +21,26 @@ def main():
     try:
         file_processor = FileProcessorCocurrent(FILE_PATH)
     except Exception as e:
-        logger.error(f"Error parsing file: {e.with_traceback()}")
+        logger.error(f"Error parsing file: {e}")
         return False
 
-    lint_status = ATSTestCasesLinter.lint(file_processor)
-    logger.debug(f"Lint status: {lint_status}")
-    status = all(lint_status.values())
-    if not status:
-        logger.info(f"Test case docstrings are valid. {lint_status}")
-        return False
+    test_cases = []
+    for module in file_processor:
+        for test_class in module.test_classes:
+            test_cases.extend(test_class.test_cases)
+        test_cases.extend(module.test_cases)
 
-    logger.error("Some test case docstrings are invalid.")
-    return True
+    ats_cases = ATSTestCasesFactory(test_cases).ats_test_cases
+    linter = ATSTestCasesLinter(ats_cases)
+    status = linter.lint()
+    logger.debug(f"Lint results: {linter.lint_results}")
+
+    if status:
+        logger.info("Test case docstrings are valid.")
+    else:
+        logger.error("Some test case docstrings are invalid.")
+
+    return status
 
 
 def run():
