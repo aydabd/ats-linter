@@ -216,7 +216,7 @@ class LintTestCase:
     def _check_matching_approvals_and_steps(self) -> None:
         """Check if the number of approvals matches the number of verify steps."""
         nbr_of_approvals = len(self.test_description.approvals)
-        nbr_of_verify_steps = len(self)  # type: ignore
+        nbr_of_verify_steps = len(self.test_description.verify_steps)
         logger.debug(f"Number of approvals: {nbr_of_approvals}")
         logger.debug(f"Number of verify steps: {nbr_of_verify_steps}")
         if (
@@ -332,6 +332,7 @@ class ATSTestCasesLinter:
         Returns:
             True if the test case passes linting, False otherwise.
         """
+        lint_result = False
         try:
             lint_result = LintTestCase(ats_test_case).lint()
 
@@ -347,6 +348,9 @@ class ATSTestCasesLinter:
             )
 
             with lock:
-                lint_results[ats_test_case.test_case.name]["status"] = lint_result
+                # Add the failed lint result to the dictionary
+                lint_results.update(
+                    {ats_test_case.test_case.name: {"status": lint_result}}
+                )
 
         return lint_result
