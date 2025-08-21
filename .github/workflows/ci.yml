@@ -26,6 +26,7 @@ jobs:
   prepare:
     name: Lints and test document on linux
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -33,6 +34,8 @@ jobs:
     defaults:
       run:
         shell: bash -el {0}
+    env:
+      PIP_DEFAULT_TIMEOUT: 300
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -43,12 +46,13 @@ jobs:
         python-version: 3.12
     - name: Run tox env ${{ matrix.tox-envs }}
       run: |
-        pip install tox
+        pip install --timeout=300 tox
         tox -e ${{ matrix.tox-envs }}
 
   test:
     name: Unit tests on linux
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -56,6 +60,8 @@ jobs:
     defaults:
       run:
         shell: bash -el {0}
+    env:
+      PIP_DEFAULT_TIMEOUT: 300
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -68,7 +74,7 @@ jobs:
 
       - name: Run unit tests ${{ matrix.python-version }}
         run: |
-          pip install tox
+          pip install --timeout=300 tox
           tox
 
   build:
@@ -82,6 +88,8 @@ jobs:
     defaults:
       run:
         shell: bash -el {0}
+    env:
+      PIP_DEFAULT_TIMEOUT: 300
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -94,7 +102,7 @@ jobs:
 
       - name: Build package
         run: |
-          pip install tox
+          pip install --timeout=300 tox
           tox -e build
 
       - name: Upload distribution files
@@ -133,7 +141,7 @@ jobs:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
-          pip install tox
+          pip install --timeout=300 tox
           tox -e publish
   deploy:
     needs: publish
