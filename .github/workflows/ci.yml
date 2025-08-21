@@ -26,8 +26,6 @@ jobs:
   prepare:
     name: Lints and test document on linux
     runs-on: ubuntu-latest
-    outputs:
-      docs-path: ${{ steps.build-docs.outputs.docs-path }}
     strategy:
       fail-fast: false
       matrix:
@@ -77,9 +75,6 @@ jobs:
     needs: [prepare, test]
     name: Build on linux
     runs-on: ubuntu-latest
-    outputs:
-      python-path: ${{ steps.setup-python.outputs.python-path }}
-      wheel-distribution: ${{ steps.wheel-distribution.outputs.path }}
     strategy:
       fail-fast: false
       matrix:
@@ -94,6 +89,8 @@ jobs:
 
       - name: Set up Python
         uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
 
       - name: Build package
         run: |
@@ -117,8 +114,13 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with: {fetch-depth: 0}  # deep clone for setuptools-scm
       - name: Set up Python
         uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
       - name: Retrieve pre-built distribution files
         uses: actions/download-artifact@v4
         with: {name: python-distribution-files, path: dist/}
@@ -143,6 +145,9 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with: {fetch-depth: 0}  # deep clone for setuptools-scm
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
