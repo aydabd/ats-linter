@@ -7,7 +7,6 @@ omit =
     **/tests/**
 branch = True
 disable_warnings = no-data-collected
-data_file = $COVERAGE_FILE
 
 [report]
 fail_under = 100
@@ -34,7 +33,7 @@ skip_covered = True
 ignore_errors = True
 
 [html]
-directory = ${COVERAGE_FILE}_html
+directory = coverage_html
 
 [junit]
-output = ${COVERAGE_FILE}.xml
+output = coverage.xml
