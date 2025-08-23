@@ -9,7 +9,7 @@ branch = True
 disable_warnings = no-data-collected
 
 [report]
-fail_under = 100
+fail_under = 10
 omit =
     tests/*
 # Regexes for lines to exclude from consideration

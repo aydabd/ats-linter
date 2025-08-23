@@ -33,6 +33,7 @@ Example:
         The junit.xml file can be used to generate a report in Jenkins.
 
 """
+
 from importlib.metadata import PackageNotFoundError, version  # pragma: no cover
 
 try:
