@@ -2,8 +2,9 @@
 
 This module defines the data classes used in this module.
 """
-from typing import Dict, List, Optional, Union
+
 from dataclasses import asdict, dataclass
+from typing import Dict, List, Optional, Union
 
 
 @dataclass(frozen=True)

@@ -7,10 +7,12 @@ Example:
     print(test_directory.test_directories)
     print(test_directory.test_files)
 """
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import InitVar, asdict, dataclass, field
 from pathlib import Path
 from typing import Iterable, List, Optional, Tuple
-from dataclasses import asdict, dataclass, field, InitVar
+
 from loguru import logger
 
 # Comment out to enable logging

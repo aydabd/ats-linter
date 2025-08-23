@@ -2,6 +2,7 @@
 
 ASTProducer reads files and produces AST(Abstract Syntax Tree)s.
 """
+
 import ast
 import asyncio
 from dataclasses import dataclass, field
@@ -10,12 +11,12 @@ from typing import List, Optional
 
 from loguru import logger
 
-from ats_linter.data_classes import TestModule, TestCase, PytestFixture
 from ats_linter.ast_test_module_factory import (
     PY_EXTENSION,
     TEST_PREFIX,
     ASTTestModuleFactory,
 )
+from ats_linter.data_classes import PytestFixture, TestCase, TestModule
 
 # Comment out to enable logging
 logger.disable("__name__")
@@ -229,9 +230,10 @@ class AsyncASTParser:
 
     async def run_producer_consumer(self):
         """Run the producer-consumer pattern."""
-        async with ASTProducer(self.file_paths) as producer, ASTConsumer(
-            producer.ast_tree_queue, self.test_modules
-        ) as consumer:
+        async with (
+            ASTProducer(self.file_paths) as producer,
+            ASTConsumer(producer.ast_tree_queue, self.test_modules) as consumer,
+        ):
             await producer.task
             await producer.ast_tree_queue.put(SENTINEL)  # Signal consumer to stop
             await consumer.task

@@ -7,11 +7,12 @@ extracting test module, classes, cases, and pytest fixtures.
 Test cases are based on unittest.TestCase and pytest test functions and
 fixtures based on pytest fixtures.
 """
+
 import ast
 from dataclasses import dataclass
 from typing import Callable, List, Sequence
 
-from ats_linter.data_classes import Entity, TestClass, TestCase, PytestFixture
+from ats_linter.data_classes import Entity, PytestFixture, TestCase, TestClass
 
 TEST_PREFIX = "test_"
 TEST_CLASS_PREFIX = "Test"
