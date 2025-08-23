@@ -2,11 +2,13 @@
 
 A script for cleaning up project directories.
 """
+
 import asyncio
-import aiofiles
-from pathlib import Path
 import shutil
+from pathlib import Path
 from typing import List, Set
+
+import aiofiles
 
 # Usage
 TMP_DIRECTORIES = [

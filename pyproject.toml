@@ -61,7 +61,7 @@ ats-linter = "ats_linter.cli:run"
 
 [tool.black]
 line-length = 88
-target-version = ["py311", "py312", "py313"]
+target-version = ["py311", "py312"]
 include = '\.pyi?$'
 
 exclude = '''

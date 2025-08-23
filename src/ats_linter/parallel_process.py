@@ -2,11 +2,13 @@
 
 FileProcessorCocurrent is a class for processing files in parallel.
 """
+
 from dataclasses import asdict, dataclass, field
-from ats_linter.file_collector import FileCollector
-from ats_linter.async_ast_parser import AsyncASTParser
 
 from loguru import logger
+
+from ats_linter.async_ast_parser import AsyncASTParser
+from ats_linter.file_collector import FileCollector
 
 
 @dataclass
