@@ -42,7 +42,7 @@ jobs:
       with: {fetch-depth: 0}  # deep clone for setuptools-scm
     - name: Set up Python
       uses: actions/setup-python@v5
-      with: 
+      with:
         python-version: 3.12
     - name: Run tox env ${{ matrix.tox-envs }}
       run: |

@@ -38,11 +38,12 @@ class ProjectCleaner:
         file_extensions_to_remove: A set of file extensions to remove.
 
     Examples as library:
+        >>> import asyncio
         >>> cleaner = ProjectCleaner(TMP_DIRECTORIES, FILE_EXTENSIONS)
-        >>> cleaner.clean()
+        >>> asyncio.run(cleaner.clean())  # doctest: +SKIP
 
     Examples as script:
-        >>> python project_cleaner.py
+        $ python project_cleaner.py
     """
 
     def __init__(
