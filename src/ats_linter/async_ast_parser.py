@@ -260,7 +260,9 @@ class AsyncASTParser:
         try:
             loop = asyncio.get_running_loop()
             # If we're already in an event loop, schedule and wait
-            return loop.run_until_complete(self.gather_producer_consumer_task()) # pragma: no cover
+            return loop.run_until_complete(
+                self.gather_producer_consumer_task()
+            )  # pragma: no cover
         except RuntimeError:
             # No event loop, safe to use asyncio.run
             return asyncio.run(self.gather_producer_consumer_task())
