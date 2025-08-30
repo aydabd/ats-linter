@@ -11,17 +11,17 @@
 - `/docs/`: Documentation (Sphinx)
 - `/conda_envs/`, `/conda-recipe/`: Environment and packaging
 - `.github/`: GitHub workflows and Copilot instructions
-- `pyproject.toml`, `tox.ini`, `environment.yaml`: Project configuration
+- `pyproject.toml`, `tox.ini`, `.githooks.d/pre-commit_environment.yml`: Project configuration
 
 ## Build, Test, and Validation Steps
 
 ### Environment Setup
-- Always use the provided `environment.yaml` with micromamba or conda:
+- Always use the provided `.githooks.d/pre-commit_environment.yaml` with micromamba or conda:
   ```sh
-  micromamba create -f environment.yaml
+  micromamba create -f .githooks.d/pre-commit_environment.yaml
   micromamba activate ats-linter
   ```
-- All dependencies (including test and dev) are specified in `environment.yaml` and `pyproject.toml`.
+- All dependencies (including test and dev) are specified in `.githooks.d/pre-commit_environment.yaml` and `pyproject.toml`.
 
 ### Running Tests
 - Use tox for all test and coverage tasks:
@@ -68,7 +68,7 @@
 ## Key Notes for Copilot
 - Always activate the micromamba environment before running any build, test, or lint command.
 - Use the exact commands above for validation and automation.
-- If you add dependencies, update both `environment.yaml` and `pyproject.toml` (and `requirements-dev.txt` if needed).
+- If you add dependencies, update both `.githooks.d/pre-commit_environment.yaml` and `pyproject.toml` (and `requirements-dev.txt` if needed).
 - Place all new or updated tests in `tests/`, importing code from `src/ats_linter/`.
 - Use Sphinx for documentation; build docs with `tox -e docs` and keep docstrings up to date.
 - Prefer modern, Pythonic solutions and libraries when implementing new features.

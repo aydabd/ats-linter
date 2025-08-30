@@ -1,13 +1,57 @@
-#!/bin/bash
-CONDA_ENVS=$(conda info)
-if [ $? -ne 0 ]; then
-    echo "[ERROR] Please install Miniconda and create the 'ats_linter' environment."
-    echo "[INFO] Check the ats-linter documentation for how to install it."
-    exit 1
+#!/usr/bin/env bash
+set -e
+
+# Detect OS and ARCH
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+
+# Map ARCH to expected values
+case "$ARCH" in
+	x86_64)
+		ARCH="amd64";;
+	arm64|aarch64)
+		ARCH="arm64";;
+	*)
+		echo "[ERROR] Unsupported architecture: $ARCH"; exit 1;;
+esac
+
+# Map OS to expected values and set installer extension
+case "$OS" in
+	linux)
+		PLATFORM="linux"
+		EXT=""
+		;;
+	darwin)
+		PLATFORM="darwin"
+		EXT=""
+		;;
+	msys*|cygwin*|mingw*|windowsnt|win*)
+		PLATFORM="windows"
+		EXT=".exe"
+		;;
+	*)
+		echo "[ERROR] Unsupported OS: $OS"; exit 1;;
+esac
+
+INSTALLER_URL="https://github.com/aydabd/mamba-githook/releases/download/1.0.1/mamba-githook-installer-${PLATFORM}-${ARCH}${EXT}"
+INSTALLER_BIN="mamba-githook-installer${EXT}"
+
+echo "[INFO] Downloading mamba-githook-installer for $PLATFORM-$ARCH..."
+curl -L "$INSTALLER_URL" -o "$INSTALLER_BIN"
+if [ "$PLATFORM" != "windows" ]; then
+	chmod +x "$INSTALLER_BIN"
 fi
 
-CONDA_ENV=$(conda info | awk 'NR==2{print $4}')
-if [ $CONDA_ENV == "None" ]; then
-    echo "[ERROR] Please provide a valid virtual environment(conda). For a list of valid virtual environment, please see conda env list."
-    exit 1
+echo "[INFO] Installing mamba-githook..."
+if [ "$PLATFORM" = "windows" ]; then
+	./$INSTALLER_BIN install
+else
+	./$INSTALLER_BIN install
+fi
+
+echo "[INFO] Checking mamba-githook status..."
+if [ "$PLATFORM" = "windows" ]; then
+	./$INSTALLER_BIN status
+else
+	./$INSTALLER_BIN status
 fi
