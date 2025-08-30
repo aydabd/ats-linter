@@ -189,16 +189,14 @@ class ASTConsumer:
         """
         nodes = list(ast.iter_child_nodes(ast_tree))
         function_nodes = ASTTestModuleFactory.get_function_nodes(nodes)
+        test_classes = ASTTestModuleFactory.get_test_classes(nodes)
+        parsed_test_classes = ASTTestModuleFactory.parse_test_classes(test_classes)
         test_cases = ASTTestModuleFactory.extract_entities(
             function_nodes, TestCase, ASTTestModuleFactory.is_test_case
         )
         fixtures = ASTTestModuleFactory.extract_entities(
             function_nodes, PytestFixture, ASTTestModuleFactory.is_pytest_fixture
         )
-        parsed_test_classes = ASTTestModuleFactory.parse_test_classes(
-            ASTTestModuleFactory.get_test_classes(nodes)
-        )
-
         return TestModule(module_name.stem, parsed_test_classes, test_cases, fixtures)
 
 
@@ -219,7 +217,22 @@ class AsyncASTParser:
 
     def __post_init__(self):
         """Initialize the class."""
-        self.run()
+        # Only run automatically if not in an event loop (for CLI usage)
+        try:
+            asyncio.get_running_loop()
+        except RuntimeError:
+            self.run()
+
+    async def async_run(self):
+        """Run the producer-consumer task in an async context."""
+        await self.gather_producer_consumer_task()
+
+    @classmethod
+    async def from_files(cls, file_paths):
+        """Async factory for use in async test environments."""
+        self = cls(file_paths)
+        await self.run_producer_consumer()
+        return self
 
     def __len__(self):
         """Return the number of TestModule objects."""
@@ -243,5 +256,11 @@ class AsyncASTParser:
         await asyncio.gather(self.run_producer_consumer())
 
     def run(self):
-        """Run the producer-consumer task."""
-        return asyncio.run(self.gather_producer_consumer_task())
+        """Run the producer-consumer task, compatible with sync and async contexts."""
+        try:
+            loop = asyncio.get_running_loop()
+            # If we're already in an event loop, schedule and wait
+            return loop.run_until_complete(self.gather_producer_consumer_task()) # pragma: no cover
+        except RuntimeError:
+            # No event loop, safe to use asyncio.run
+            return asyncio.run(self.gather_producer_consumer_task())
