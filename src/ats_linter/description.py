@@ -32,19 +32,19 @@ class TestDescription:
         test_steps: The steps to execute the test.
         verify_steps: The steps that verifies test.
     """
+    __test__ = False
 
     docstring: str
     objective: Optional[str] = field(default=None)
     approvals: List[str] = field(default_factory=list)
-    preconditions: Optional[Dict[int, str]] = field(default_factory=Dict[int, str])
-    data_driven_test: Optional[List[str]] = field(default_factory=List[str])
+    preconditions: Optional[Dict[int, str]] = field(default_factory=dict)
+    data_driven_test: Optional[List[str]] = field(default_factory=list)
     test_steps: Dict[int, str] = field(default_factory=dict)
     verify_steps: Dict[int, str] = field(default_factory=dict)
 
     def __post_init__(self):
-        """Post init method to create TestDescription."""
-        self.parse_sections()
-        TestDescriptionFactory.dataclass_test_docstring_factory(self.docstring)
+        """Post init method (no-op, parsing handled by factory)."""
+        pass
 
     def __dict__(self) -> Dict[str, Any]:  # type: ignore
         """Return the test description as a dict.
@@ -56,6 +56,10 @@ class TestDescription:
 
 
 class TestDescriptionFactory:
+    @staticmethod
+    def from_docstring(docstring: str) -> TestDescription:
+        """Create a TestDescription from a docstring (compatibility alias)."""
+        return TestDescriptionFactory.dataclass_test_docstring_factory(docstring)
     """Factory class to create a TestDescription instance."""
 
     @staticmethod
@@ -114,16 +118,36 @@ class TestDescriptionFactory:
         Returns:
             :class: `TestDescription` instance.
         """
-        # Split docstring into sections
-        sections = {
-            section_name.strip(): dedent(section).strip()
-            for section_name, _, section in (
-                section.partition(":") for section in docstring.split("\n\n")
-            )
-        }
+        import re
+        section_headers = [
+            SECTION_OBJECTIVE,
+            SECTION_APPROVALS,
+            SECTION_PRECONDITIONS,
+            SECTION_DATA_DRIVEN_TEST,
+            SECTION_TEST_STEPS,
+            SECTION_VERIFY,
+        ]
+        header_regex = r"^([A-Za-z\- ]+):\s*$"
+        lines = docstring.splitlines()
+        sections = {}
+        current_section = None
+        current_content = []
+        for line in lines:
+            header_match = re.match(header_regex, line.strip())
+            if header_match and header_match.group(1) in section_headers:
+                if current_section:
+                    sections[current_section] = "\n".join(current_content).rstrip()
+                current_section = header_match.group(1)
+                current_content = []
+            elif current_section:
+                current_content.append(line)
+        if current_section:
+            sections[current_section] = "\n".join(current_content).rstrip()
         logger.debug(f"Docstring sections: {sections}")
 
-        objective = sections.get(SECTION_OBJECTIVE)
+        objective = sections.get(SECTION_OBJECTIVE, None)
+        if objective is not None:
+            objective = objective.strip()
         approvals = TestDescriptionFactory.parse_dash_list_section(
             sections.get(SECTION_APPROVALS, "")
         )
@@ -131,20 +155,26 @@ class TestDescriptionFactory:
             TestDescriptionFactory.parse_numbered_list_section(
                 sections.get(SECTION_PRECONDITIONS, "")
             )
-            if SECTION_PRECONDITIONS in sections
-            else None
+            if SECTION_PRECONDITIONS in sections and sections.get(SECTION_PRECONDITIONS, "") else None
         )
         data_driven_test = (
             TestDescriptionFactory.parse_dash_list_section(
                 sections.get(SECTION_DATA_DRIVEN_TEST, "")
             )
-            if SECTION_DATA_DRIVEN_TEST in sections
-            else None
+            if SECTION_DATA_DRIVEN_TEST in sections and sections.get(SECTION_DATA_DRIVEN_TEST, "") else None
         )
         test_steps = TestDescriptionFactory.parse_numbered_list_section(
             sections.get(SECTION_TEST_STEPS, "")
         )
-        verify_steps = TestDescriptionFactory.parse_verify_steps(test_steps)
+
+        # Extract verify steps: prefer dedicated Verify: section, else extract from Test steps lines containing 'Verify that'
+        if SECTION_VERIFY in sections and sections.get(SECTION_VERIFY, "").strip():
+            verify_steps = TestDescriptionFactory.parse_numbered_list_section(
+                sections.get(SECTION_VERIFY, "")
+            )
+        else:
+            # Extract from test_steps values containing 'Verify that'
+            verify_steps = {k: v for k, v in test_steps.items() if v.strip().startswith("Verify that")}
 
         logger.debug(f"Test steps: {test_steps}")
         logger.debug(f"Verify steps: {verify_steps}")
