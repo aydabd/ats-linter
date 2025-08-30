@@ -1,15 +1,23 @@
 import ast
 import asyncio
-import tempfile
 from pathlib import Path
+
 import pytest
-from ats_linter.async_ast_parser import ASTProducer, ASTConsumer, AsyncASTParser, SENTINEL
+
+from ats_linter.async_ast_parser import (
+    SENTINEL,
+    ASTConsumer,
+    ASTProducer,
+    AsyncASTParser,
+)
+
 
 @pytest.mark.asyncio
 async def test_astproducer_and_consumer_basic():
     # Create a temp python file with a test class and test function
-    import uuid
     import shutil
+    import uuid
+
     tmp_dir = Path(__file__).parent / "_tmp"
     tmp_dir.mkdir(exist_ok=True)
     unique_name = f"test_temp_{uuid.uuid4().hex}.py"
@@ -17,9 +25,9 @@ async def test_astproducer_and_consumer_basic():
     try:
         file_path.write_text(
             "class TestSomething:\n"
-            "    \"\"\"A test class docstring.\"\"\"\n"
+            '    """A test class docstring."""\n'
             "    def test_foo(self):\n"
-            "        \"\"\"A test method docstring.\"\"\"\n"
+            '        """A test method docstring."""\n'
             "        pass\n"
         )
         # Print the AST for debugging
@@ -43,6 +51,7 @@ async def test_astproducer_and_consumer_basic():
         if tmp_dir.exists():
             shutil.rmtree(tmp_dir)
 
+
 @pytest.mark.asyncio
 async def test_astproducer_handles_no_files():
     modules = []
@@ -55,6 +64,7 @@ async def test_astproducer_handles_no_files():
         await consumer.task
     assert modules == []
 
+
 def test_asyncastparser_len_and_run(tmp_path):
     # Create two temp python files
     f1 = tmp_path / "test_a.py"
@@ -63,8 +73,10 @@ def test_asyncastparser_len_and_run(tmp_path):
     f2.write_text("class TestB:\n    def test_bar(self): pass\n")
     parser = AsyncASTParser([f1, f2])
     import asyncio
+
     asyncio.run(parser.async_run())
     assert isinstance(len(parser), int)
+
 
 @pytest.mark.asyncio
 async def test_asyncastparser_from_files(tmp_path):
@@ -74,16 +86,19 @@ async def test_asyncastparser_from_files(tmp_path):
     assert isinstance(parser, AsyncASTParser)
     assert len(parser) >= 0
 
+
 @pytest.mark.asyncio
 async def test_astproducer_aexit_cancels_task(monkeypatch):
     # Simulate a running task that is cancelled
     class DummyProducer(ASTProducer):
         async def produce_ast_trees(self):
             await asyncio.sleep(0.01)
+
     producer = DummyProducer([])
     await producer.__aenter__()
     await producer.__aexit__(Exception, Exception("fail"), None)
     assert producer.task.cancelled() or producer.task.done()
+
 
 @pytest.mark.asyncio
 async def test_astconsumer_aexit_logs(monkeypatch):
@@ -97,13 +112,13 @@ async def test_astconsumer_aexit_logs(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_astproducer_aexit_with_exception():
-    modules = []
-    queue = asyncio.Queue()
+    asyncio.Queue()
     producer = ASTProducer([])
     await producer.__aenter__()
     # Simulate an exception in the context
     await producer.__aexit__(Exception, Exception("fail"), None)
     # Should reach here without error
+
 
 @pytest.mark.asyncio
 async def test_astconsumer_aexit_with_exception():
@@ -115,12 +130,14 @@ async def test_astconsumer_aexit_with_exception():
     await consumer.__aexit__(Exception, Exception("fail"), None)
     # Should reach here without error
 
+
 def test_asyncastparser_post_init_outside_event_loop(tmp_path):
     # This should run the .run() branch in __post_init__
     f1 = tmp_path / "test_post_init.py"
     f1.write_text("def test_post(): pass\n")
     parser = AsyncASTParser([f1])
     assert isinstance(parser, AsyncASTParser)
+
 
 @pytest.mark.asyncio
 async def test_asyncastparser_gather_producer_consumer_task(tmp_path):
@@ -144,6 +161,7 @@ async def test_astproducer_produce_ast_trees_none(monkeypatch, tmp_path):
     assert producer.ast_tree_queue.empty()
     await producer.__aexit__(None, None, None)
 
+
 def test_asyncastparser_len_empty():
     parser = AsyncASTParser([])
     assert len(parser) == 0
@@ -154,15 +172,17 @@ def test_asyncastparser_len_with_module(tmp_path):
     f1.write_text("def test_len(): pass\n")
     parser = AsyncASTParser([f1])
     parser.test_modules.clear()  # Remove any auto-added modules
+
     class DummyTestModule:
         def __len__(self):
             return 42
+
     parser.test_modules.append(DummyTestModule())
     assert len(parser) == 42
 
 
 def test_asyncastparser_run_no_event_loop(tmp_path):
-    """Covers the except branch in AsyncASTParser.run() when no event loop is running."""
+    """Covers the except branch in AsyncASTParser.run() when no event loop is running."""  # noqa: E501
     f1 = tmp_path / "test_run_no_event_loop.py"
     f1.write_text("def test_run(): pass\n")
     parser = AsyncASTParser([f1])
@@ -172,13 +192,15 @@ def test_asyncastparser_run_no_event_loop(tmp_path):
 
 
 def test_asyncastparser_run_explicit_except_branch(tmp_path, monkeypatch):
-    """Explicitly cover the except RuntimeError: branch in AsyncASTParser.run() by mocking get_running_loop."""
+    """Explicitly cover the except RuntimeError: branch in AsyncASTParser.run() by mocking get_running_loop."""  # noqa: E501
     f1 = tmp_path / "test_run_explicit_except_branch.py"
     f1.write_text("def test_run(): pass\n")
     parser = AsyncASTParser([f1])
     import asyncio
+
     def raise_runtime_error():
         raise RuntimeError
+
     monkeypatch.setattr(asyncio, "get_running_loop", raise_runtime_error)
     parser.run()
     assert isinstance(parser.test_modules, list)

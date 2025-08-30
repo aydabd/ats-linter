@@ -1,4 +1,3 @@
-import pytest
 from ats_linter import cli
 
 
@@ -21,7 +20,7 @@ def test_main_success(mocker):
 
 
 def test_main_failure(mocker):
-    mock_file_processor = mocker.patch("ats_linter.cli.FileProcessorCocurrent", side_effect=Exception("fail"))
+    mocker.patch("ats_linter.cli.FileProcessorCocurrent", side_effect=Exception("fail"))
     assert cli.main() is False
 
 

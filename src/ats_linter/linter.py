@@ -45,14 +45,16 @@ class ATSTestCase:
         test_description: ATS test case description :class: `TestDescription`.
     """
 
-
     test_case: TestCase
     test_description: TestDescription = field(init=False, default=None)
 
     def __post_init__(self):
         """Post init method to parse docstring and create sections."""
         from ats_linter.description import TestDescriptionFactory
-        self.test_description = TestDescriptionFactory.from_docstring(self.test_case.docstring)
+
+        self.test_description = TestDescriptionFactory.from_docstring(
+            self.test_case.docstring
+        )
         logger.debug(f"ATS test description: {self.test_description}")
 
     def __dict__(self) -> Dict[str, Any]:
@@ -308,6 +310,7 @@ class ATSTestCasesLinter:
         max_workers = len(self.ats_test_cases)
         lock = Lock()
         from ats_linter.linter import lint_ats_test_case
+
         all_passed = True
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = [
@@ -318,13 +321,13 @@ class ATSTestCasesLinter:
             ]
             for future in as_completed(futures):
                 if not future.result():
-                    all_passed = False # pragma: no cover
+                    all_passed = False  # pragma: no cover
         return all_passed
 
 
 # Module-level function for direct import and testing
 def lint_ats_test_case(
-    ats_test_case: 'ATSTestCase', lint_results: Dict[str, Any], lock: Lock
+    ats_test_case: "ATSTestCase", lint_results: Dict[str, Any], lock: Lock
 ) -> bool:
     """Lint a single test case.
 
@@ -341,18 +344,12 @@ def lint_ats_test_case(
         # Ensure that the dictionary is accessed in a thread-safe manner
         with lock:
             # Add the lint result to the dictionary
-            lint_results.update(
-                {ats_test_case.test_case.name: {"status": lint_result}}
-            )
+            lint_results.update({ats_test_case.test_case.name: {"status": lint_result}})
     except Exception as e:
-        logger.error(
-            f"Failed to lint test case '{ats_test_case.test_case.name}': {e}"
-        )
+        logger.error(f"Failed to lint test case '{ats_test_case.test_case.name}': {e}")
 
         with lock:
             # Add the failed lint result to the dictionary
-            lint_results.update(
-                {ats_test_case.test_case.name: {"status": lint_result}}
-            )
+            lint_results.update({ats_test_case.test_case.name: {"status": lint_result}})
 
     return lint_result

@@ -16,4 +16,3 @@ dependencies:
   - pip:
       - setuptools>=61
       - setuptools_scm[toml]>=6.2
-

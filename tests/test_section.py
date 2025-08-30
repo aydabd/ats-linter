@@ -1,5 +1,6 @@
 from ats_linter.data_classes import Section
 
+
 def test_section_dict():
     s = Section(name="foo", error_message=None)
     d = s.__dict__()
