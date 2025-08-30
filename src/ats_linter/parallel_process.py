@@ -43,4 +43,4 @@ class FileProcessorCocurrent:
         return iter(self.async_ast_parser.test_modules)
 
     def __dict__(self):
-        return asdict(self.async_ast_parser.test_modules)
+        return [asdict(m) for m in self.async_ast_parser.test_modules]
