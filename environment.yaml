@@ -1,0 +1,19 @@
+name: ats-linter
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - pip
+  - pytest
+  - pytest-asyncio
+  - pytest-cov
+  - pytest-mock
+  - pytest-xdist
+  - pytest-fixture-config
+  - pre-commit
+  - loguru
+  - pip:
+      - setuptools>=61
+      - setuptools_scm[toml]>=6.2
+
