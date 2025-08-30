@@ -36,7 +36,7 @@ MISMATCH_APPROVALS_VERIFY_ERROR_MESSAGE = (
 )
 
 
-@dataclass(frozen=True)
+@dataclass
 class ATSTestCase:
     """Represents a ATS test case.
 
@@ -45,14 +45,14 @@ class ATSTestCase:
         test_description: ATS test case description :class: `TestDescription`.
     """
 
+
     test_case: TestCase
-    test_description: TestDescription = field(
-        init=False, default_factory=TestDescription
-    )
+    test_description: TestDescription = field(init=False, default=None)
 
     def __post_init__(self):
         """Post init method to parse docstring and create sections."""
-        self.test_description = TestDescription(self.test_case.docstring)
+        from ats_linter.description import TestDescriptionFactory
+        self.test_description = TestDescriptionFactory.from_docstring(self.test_case.docstring)
         logger.debug(f"ATS test description: {self.test_description}")
 
     def __dict__(self) -> Dict[str, Any]:
@@ -158,12 +158,10 @@ class LintTestCase:
     """
 
     ats_test_case: ATSTestCase
-    test_case: TestCase = field(init=False, default_factory=TestCase)
-    test_description: TestDescription = field(
-        init=False, default_factory=TestDescription
-    )
+    test_case: TestCase = field(init=False)
+    test_description: TestDescription = field(init=False)
     sections: List[Section] = field(init=False, default_factory=list)
-    lint_result: LintResult = field(init=False, default_factory=LintResult)
+    lint_result: LintResult = field(init=False)
 
     def __post_init__(self):
         """Post init method to parse docstring and create sections."""
@@ -173,7 +171,7 @@ class LintTestCase:
             Section(name=section_name, error_message=None)
             for section_name in SECTION_NAMES
         ]
-        # self.lint_result = LintResult(
+        self.lint_result = None
 
     def _check_section_presence(self, section: Section) -> None:
         """Check the presence of a section in the docstring.
@@ -305,52 +303,56 @@ class ATSTestCasesLinter:
         Returns:
             True if the test case docstring passes linting, False otherwise.
         """
+        if not self.ats_test_cases:
+            return True
         max_workers = len(self.ats_test_cases)
         lock = Lock()
+        from ats_linter.linter import lint_ats_test_case
+        all_passed = True
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = [
                 executor.submit(
-                    self.lint_ats_test_case, ats_test_case, self.lint_results, lock
+                    lint_ats_test_case, ats_test_case, self.lint_results, lock
                 )
                 for ats_test_case in self.ats_test_cases
             ]
             for future in as_completed(futures):
                 if not future.result():
-                    return False
+                    all_passed = False # pragma: no cover
+        return all_passed
 
-        return True
 
-    @staticmethod
-    def lint_ats_test_case(
-        ats_test_case: ATSTestCase, lint_results: Dict[str, Any], lock: Lock
-    ) -> bool:
-        """Lint a single test case.
+# Module-level function for direct import and testing
+def lint_ats_test_case(
+    ats_test_case: 'ATSTestCase', lint_results: Dict[str, Any], lock: Lock
+) -> bool:
+    """Lint a single test case.
 
-        Args:
-            test_case: The test case to lint.
+    Args:
+        test_case: The test case to lint.
 
-        Returns:
-            True if the test case passes linting, False otherwise.
-        """
-        lint_result = False
-        try:
-            lint_result = LintTestCase(ats_test_case).lint()
+    Returns:
+        True if the test case passes linting, False otherwise.
+    """
+    lint_result = False
+    try:
+        lint_result = LintTestCase(ats_test_case).lint()
 
-            # Ensure that the dictionary is accessed in a thread-safe manner
-            with lock:
-                # Add the lint result to the dictionary
-                lint_results.update(
-                    {ats_test_case.test_case.name: {"status": lint_result}}
-                )
-        except Exception as e:
-            logger.error(
-                f"Failed to lint test case '{ats_test_case.test_case.name}': {e}"
+        # Ensure that the dictionary is accessed in a thread-safe manner
+        with lock:
+            # Add the lint result to the dictionary
+            lint_results.update(
+                {ats_test_case.test_case.name: {"status": lint_result}}
+            )
+    except Exception as e:
+        logger.error(
+            f"Failed to lint test case '{ats_test_case.test_case.name}': {e}"
+        )
+
+        with lock:
+            # Add the failed lint result to the dictionary
+            lint_results.update(
+                {ats_test_case.test_case.name: {"status": lint_result}}
             )
 
-            with lock:
-                # Add the failed lint result to the dictionary
-                lint_results.update(
-                    {ats_test_case.test_case.name: {"status": lint_result}}
-                )
-
-        return lint_result
+    return lint_result
