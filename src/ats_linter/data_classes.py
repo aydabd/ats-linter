@@ -9,6 +9,7 @@ from typing import Dict, List, Optional, Union
 
 @dataclass(frozen=True)
 class TestCase:
+    __test__ = False
     """Represent a test case.
 
     Parameters:
@@ -54,6 +55,7 @@ class Entity:
 
 @dataclass(frozen=True)
 class TestClass:
+    __test__ = False
     """Represent a test class.
 
     Parameters:
@@ -92,6 +94,7 @@ class TestClass:
 
 @dataclass(frozen=True)
 class TestModule:
+    __test__ = False
     """Represent a test module.
 
     Parameters:
