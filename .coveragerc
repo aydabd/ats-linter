@@ -29,7 +29,6 @@ exclude_lines =
     if 0:
     if __name__ == .__main__.:
 show_missing = True
-skip_covered = True
 ignore_errors = True
 
 [html]
