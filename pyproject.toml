@@ -73,3 +73,16 @@ exclude = '''
   | tests
 )
 '''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --cov=ats_linter -vv --ignore=test_template1.py"
+log_file = "output/pytest_output.log"
+log_cli = true
+log_cli_level = "INFO"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+log_cli_format = "%(asctime)s %(levelname)s: %(message)s"
+asyncio_mode = "auto"
+
+[tool.codespell]
+ignore-words = ".codespell-ignore"
