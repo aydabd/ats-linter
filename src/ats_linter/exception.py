@@ -26,9 +26,7 @@ class ATSLinterError(Exception):
 
 class ATSFileCollectionError(ATSLinterError):
     """Exception raised for errors in file collection."""
-    pass
 
 
 class ATSASTParseError(ATSLinterError):
     """Exception raised for errors in AST parsing."""
-    pass

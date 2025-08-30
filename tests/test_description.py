@@ -1,5 +1,9 @@
-import pytest
-from ats_linter.description import TestDescription, TestDescriptionFactory, SECTION_VERIFY
+from ats_linter.description import (
+    SECTION_VERIFY,
+    TestDescription,
+    TestDescriptionFactory,
+)
+
 
 def test_testdescription_dict():
     docstring = """
@@ -67,7 +71,7 @@ def test_parse_verify_steps():
     test_steps = {
         1: "Do something",
         2: f"{SECTION_VERIFY} that foo works",
-        3: "Another step"
+        3: "Another step",
     }
     result = TestDescriptionFactory.parse_verify_steps(test_steps)
     assert result == {2: f"{SECTION_VERIFY} that foo works"}
