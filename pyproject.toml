@@ -16,7 +16,8 @@ authors = [
 ]
 requires-python = ">=3.11"
 readme = "README.rst"
-license = {file = "LICENSE.txt"}
+license = "MIT"
+license-files = ["LICENSE", "LICENSE"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
@@ -48,6 +49,7 @@ keywords = ["automation", "test", "lint", "ats-linter", "pytest", "unittest"]
 dev = [
     "pytest",
     "pytest-mock",
+    "pytest-asyncio",
     "pre-commit",
 ]
 
@@ -80,3 +82,13 @@ exclude = '''
   | tests
 )
 '''
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --cov=ats_linter -vv --ignore=test_template1.py"
+log_file = "output/pytest_output.log"
+log_cli = true
+log_cli_level = "INFO"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+log_cli_format = "%(asctime)s %(levelname)s: %(message)s"
+asyncio_mode = "auto"
