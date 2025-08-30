@@ -1,5 +1,6 @@
-from ats_linter.file_collector import FileCollector, PYTHON_FILE_EXTENSION
 from pathlib import Path
+
+from ats_linter.file_collector import PYTHON_FILE_EXTENSION, FileCollector
 
 
 def test_post_init(file_collector: FileCollector, tmp_path) -> None:
