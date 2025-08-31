@@ -38,7 +38,7 @@
    :target: https://github.com/aydabd/ats-linter
    :alt: Repository Size
 
-.. image:: https://img.shields.io/github/last-commit/aydabd/ats-linter.svg
+.. image:: https://img.shields.io/github/last-commit/aydabd/ats-linter/main.svg
    :target: https://github.com/aydabd/ats-linter/commits/main
    :alt: Last Commit
 
@@ -46,9 +46,9 @@
    :target: https://github.com/aydabd/ats-linter/issues
    :alt: Open Issues
 
-.. image:: https://img.shields.io/badge/Docker-integrated-blue?logo=docker
-   :target: https://github.com/aydabd/ats-linter/tree/main/integration_test
-   :alt: Docker Integration
+.. image:: https://img.shields.io/badge/Docker-supported-blue?logo=docker
+   :target: https://www.docker.com/
+   :alt: Docker Supported
 
 .. image:: https://img.shields.io/badge/CLI-Typer-ff69b4?logo=python
    :target: https://typer.tiangolo.com/
