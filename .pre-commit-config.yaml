@@ -45,5 +45,6 @@ repos:
     entry: tox -e integration-test
     language: system
     pass_filenames: false
+    always_run: true
     stages: [manual]  # Only run manually or when specifically requested
     verbose: true
