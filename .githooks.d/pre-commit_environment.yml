@@ -14,6 +14,8 @@ dependencies:
   - pre-commit
   - loguru
   - tox
+  - typer
+  - colorama
   - pip:
       - setuptools>=61
       - setuptools_scm[toml]>=6.2
