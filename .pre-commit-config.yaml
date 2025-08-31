@@ -36,3 +36,14 @@ repos:
       args: [ --fix ]
     # Run the formatter.
     - id: ruff-format
+
+- repo: local
+  hooks:
+  - id: tox-integration-test
+    name: Integration Test (Docker)
+    description: Run Docker-based integration tests
+    entry: tox -e integration-test
+    language: system
+    pass_filenames: false
+    stages: [manual]  # Only run manually or when specifically requested
+    verbose: true

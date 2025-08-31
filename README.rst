@@ -75,6 +75,12 @@ Build documentation:
 
    tox -e docs
 
+Run integration tests (requires Docker):
+
+.. code-block:: bash
+
+   tox -e integration-test
+
 
 How To Start ats-linter
 -----------------------
