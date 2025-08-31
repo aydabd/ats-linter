@@ -1,4 +1,4 @@
-name: Python package CI/CD with Miniconda and Tox
+name: CI/CD Test & Build
 
 on:
   push:
@@ -77,8 +77,30 @@ jobs:
           pip install --timeout=300 tox
           tox
 
-  build:
+  integration-test:
+    name: Integration test (Docker)
     needs: [prepare, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build integration test image
+        run: docker build --no-cache -f integration_test/Dockerfile -t ats-linter-integration .
+      - name: Run CLI integration test
+        run: |
+          docker run --rm -v "$(pwd)/integration_test/test_repo:/test_repo" ats-linter-integration
+      - name: Run pre-commit integration test
+        run: |
+          docker run --rm -v "$(pwd)/integration_test/test_repo:/test_repo" ats-linter-integration test-precommit
+        # Both tests will exit nonzero if the linter fails, causing the job to fail
+
+  build:
+    needs: [prepare, test, integration-test]
     name: Build on linux
     runs-on: ubuntu-latest
     strategy:
