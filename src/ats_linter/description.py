@@ -128,6 +128,8 @@ class TestDescriptionFactory:
             :class: `TestDescription` instance.
 
         """
+        if not docstring:
+            docstring = ""
         section_headers = [
             SECTION_OBJECTIVE,
             SECTION_APPROVALS,
