@@ -1,4 +1,6 @@
-***UNDER CONSTRUCTION***
+# .. image:: https://github.com/aydabd/ats-linter/actions/workflows/ci.yml/badge.svg?branch=main
+   :target: https://github.com/aydabd/ats-linter/actions/workflows/ci.yml
+   :alt: CI Status
 
 ============
 Introduction
@@ -15,27 +17,63 @@ ats-linter can be used as an separate terminal CLI or as a configuration for
 `pre-commit`_.
 
 This package is available at `pypi`_ and `conda-forge`_ . This ensures easy
-installation to your test development environment by `pip`_ or `conda`_.
+installation to your test development environment by `pip`_ or `micromamba`_.
 
-.. note::
 
-   It is recommended to use an isolated environment as provided by `venv`_ or
-   even better `Miniconda`_ for your work with Python in general.
+Environment Setup
+----------------
+
+It is recommended to use an isolated environment for development. This project uses `micromamba` for fast, reproducible environment management.
+
+To set up the environment:
+
+.. code-block:: bash
+
+   micromamba create -f .githooks.d/pre-commit_environment.yaml
+   micromamba activate ats-linter
+
+All dependencies (including test and dev) are specified in `.githooks.d/pre-commit_environment.yaml` and `pyproject.toml`.
+
 
 Installation
 ------------
 
-Make sure virtualenv ``Miniconda`` (`recommended`) activated.
-Install with ``pip`` or ``conda``::
+Install from PyPI:
+
+.. code-block:: bash
 
    pip install --upgrade ats-linter
-   # Or install as conda package(recommended)
-   conda install ats-linter
 
-For development, install additional requirements and the package in editable mode::
+Or install for development:
+
+.. code-block:: bash
 
    pip install -r requirements-dev.txt
    pip install -e .
+
+
+Testing & Linting
+-----------------
+
+Run all tests and coverage with tox:
+
+.. code-block:: bash
+
+   tox -e py312
+   # or for all configured Python versions
+   tox
+
+Lint and style checks:
+
+.. code-block:: bash
+
+   tox -e lint
+
+Build documentation:
+
+.. code-block:: bash
+
+   tox -e docs
 
 
 How To Start ats-linter
@@ -46,9 +84,6 @@ Check `installation-guide`_.
 .. _ATS-Linter : https://ats-linter.readthedocs.io/en/latest/
 .. _pypi: https://pypi.org/project/pip/ats-linter
 .. _pip: https://pip.pypa.io/en/stable/installing/
-.. _conda-forge: https://anaconda.org/conda-forge/ats-linter
-.. _conda: https://conda.io/projects/conda/en/stable/user-guide/install/index.html
 .. _venv: https://docs.python.org/3/library/venv.html
-.. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
 .. _installation-guide: https://ats-linter.readthedocs.io/en/latest/
 .. _pre-commit: https://pre-commit.com/
