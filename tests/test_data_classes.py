@@ -5,7 +5,10 @@ def test_testclass_len_and_dict():
     tc1 = TestCase(name="t1", docstring="doc1", code="code1")
     tc2 = TestCase(name="t2", docstring="doc2", code="code2")
     test_class = TestClass(
-        name="A", docstring="docA", test_cases=[tc1, tc2], fixtures=[]
+        name="A",
+        docstring="docA",
+        test_cases=[tc1, tc2],
+        fixtures=[],
     )
     assert len(test_class) == 2
     d = test_class.__dict__()
@@ -20,7 +23,10 @@ def test_testmodule_len_and_dict():
     tc2 = TestCase(name="t2", docstring="doc2", code="code2")
     test_class = TestClass(name="A", docstring="docA", test_cases=[tc1], fixtures=[])
     mod = TestModule(
-        name="mod1", test_classes=[test_class], test_cases=[tc2], fixtures=[]
+        name="mod1",
+        test_classes=[test_class],
+        test_cases=[tc2],
+        fixtures=[],
     )
     assert len(mod) == 2
     d = mod.__dict__()

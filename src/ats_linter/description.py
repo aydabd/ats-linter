@@ -1,10 +1,11 @@
-"""Copyright (c) 2023 Aydin Abdi
+"""Copyright (c) 2023 Aydin Abdi.
 
 This module encapsulates the logic of parsing test case test descriptions.
 """
 
+import re
 from dataclasses import asdict, dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from loguru import logger
 
@@ -23,38 +24,43 @@ SECTION_TEST_STEPS = "Test steps"
 class TestDescription:
     """Represents a test case test description.
 
-    Parameters:
+    Parameters
+    ----------
         objective: The objective of the test.
         approvals: The approval criteria of the test.
         preconditions: The preconditions of the test. None if not provided.
         data_driven_test: The data-driven test descriptions. None if not provided.
         test_steps: The steps to execute the test.
         verify_steps: The steps that verifies test.
+
     """
 
     __test__ = False
 
     docstring: str
-    objective: Optional[str] = field(default=None)
-    approvals: List[str] = field(default_factory=list)
-    preconditions: Optional[Dict[int, str]] = field(default_factory=dict)
-    data_driven_test: Optional[List[str]] = field(default_factory=list)
-    test_steps: Dict[int, str] = field(default_factory=dict)
-    verify_steps: Dict[int, str] = field(default_factory=dict)
+    objective: str | None = field(default=None)
+    approvals: list[str] = field(default_factory=list)
+    preconditions: dict[int, str] | None = field(default_factory=dict)
+    data_driven_test: list[str] | None = field(default_factory=list)
+    test_steps: dict[int, str] = field(default_factory=dict)
+    verify_steps: dict[int, str] = field(default_factory=dict)
 
     def __post_init__(self):
         """Post init method (no-op, parsing handled by factory)."""
 
-    def __dict__(self) -> Dict[str, Any]:  # type: ignore
+    def __dict__(self) -> dict[str, Any]:  # type: ignore
         """Return the test description as a dict.
 
         Returns:
             The test description as a dict.
+
         """
         return asdict(self)
 
 
 class TestDescriptionFactory:
+    """Create a TestDescription instance from various sources."""
+
     @staticmethod
     def from_docstring(docstring: str) -> TestDescription:
         """Create a TestDescription from a docstring (compatibility alias)."""
@@ -63,7 +69,7 @@ class TestDescriptionFactory:
     """Factory class to create a TestDescription instance."""
 
     @staticmethod
-    def parse_dash_list_section(section: str) -> List[str]:
+    def parse_dash_list_section(section: str) -> list[str]:
         """Parse dash(start with '-') list sections from the docstring.
 
         Args:
@@ -71,6 +77,7 @@ class TestDescriptionFactory:
 
         Returns:
             A list of items parsed from the section.
+
         """
         return [
             item.partition("-")[2].strip()
@@ -79,7 +86,7 @@ class TestDescriptionFactory:
         ]
 
     @staticmethod
-    def parse_numbered_list_section(section: str) -> Dict[int, str]:
+    def parse_numbered_list_section(section: str) -> dict[int, str]:
         """Parse numbered(1. 2. 3.) list sections from the docstring.
 
         Args:
@@ -87,6 +94,7 @@ class TestDescriptionFactory:
 
         Returns:
             A dictionary with list order as key and item as value.
+
         """
         return {
             i + 1: item.partition(".")[2].strip()
@@ -95,7 +103,7 @@ class TestDescriptionFactory:
         }
 
     @staticmethod
-    def parse_verify_steps(test_steps: Dict[int, str]) -> Dict[int, str]:
+    def parse_verify_steps(test_steps: dict[int, str]) -> dict[int, str]:
         """Parse verify steps from the test steps.
 
         Args:
@@ -103,6 +111,7 @@ class TestDescriptionFactory:
 
         Returns:
             A dictionary with key of test steps as key and verify step value as value.
+
         """
         return {
             key: value for key, value in test_steps.items() if SECTION_VERIFY in value
@@ -110,16 +119,15 @@ class TestDescriptionFactory:
 
     @staticmethod
     def dataclass_test_docstring_factory(docstring: str) -> TestDescription:
-        """Factory method to create a TestDescription instance from a docstring.
+        """Create a TestDescription instance from a docstring.
 
         Args:
             docstring: The docstring to parse.
 
         Returns:
             :class: `TestDescription` instance.
-        """
-        import re
 
+        """
         section_headers = [
             SECTION_OBJECTIVE,
             SECTION_APPROVALS,
@@ -146,15 +154,15 @@ class TestDescriptionFactory:
             sections[current_section] = "\n".join(current_content).rstrip()
         logger.debug(f"Docstring sections: {sections}")
 
-        objective = sections.get(SECTION_OBJECTIVE, None)
+        objective = sections.get(SECTION_OBJECTIVE)
         if objective is not None:
             objective = objective.strip()
         approvals = TestDescriptionFactory.parse_dash_list_section(
-            sections.get(SECTION_APPROVALS, "")
+            sections.get(SECTION_APPROVALS, ""),
         )
         preconditions = (
             TestDescriptionFactory.parse_numbered_list_section(
-                sections.get(SECTION_PRECONDITIONS, "")
+                sections.get(SECTION_PRECONDITIONS, ""),
             )
             if SECTION_PRECONDITIONS in sections
             and sections.get(SECTION_PRECONDITIONS, "")
@@ -162,14 +170,14 @@ class TestDescriptionFactory:
         )
         data_driven_test = (
             TestDescriptionFactory.parse_dash_list_section(
-                sections.get(SECTION_DATA_DRIVEN_TEST, "")
+                sections.get(SECTION_DATA_DRIVEN_TEST, ""),
             )
             if SECTION_DATA_DRIVEN_TEST in sections
             and sections.get(SECTION_DATA_DRIVEN_TEST, "")
             else None
         )
         test_steps = TestDescriptionFactory.parse_numbered_list_section(
-            sections.get(SECTION_TEST_STEPS, "")
+            sections.get(SECTION_TEST_STEPS, ""),
         )
 
         # Extract verify steps: prefer dedicated Verify: section,
@@ -177,7 +185,7 @@ class TestDescriptionFactory:
         if SECTION_VERIFY in sections and sections.get(SECTION_VERIFY, "").strip():
             verify_section = sections.get(SECTION_VERIFY, "")
             verify_steps = TestDescriptionFactory.parse_numbered_list_section(
-                verify_section
+                verify_section,
             )
         else:
             # Extract from test_steps values containing 'Verify that'

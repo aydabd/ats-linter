@@ -5,8 +5,7 @@ import pytest
 
 class TestExample(unittest.TestCase):
     def test_case_1(self):
-        """
-        Objective:
+        """Objective:
             This test is designed to verify the functionality of test case 1
 
         Approvals:
@@ -22,8 +21,7 @@ class TestExample(unittest.TestCase):
         """
 
     def test_case_2(self):
-        """
-        Objective:
+        """Objective:
             This test is designed to verify the functionality of test case 2
 
         Approvals:
@@ -41,8 +39,7 @@ class TestExample(unittest.TestCase):
 
 class TestExample2:
     def test_case_11(self):
-        """
-        Objective:
+        """Objective:
             This test is designed to verify the functionality of test case 1
 
         Approvals:
@@ -58,8 +55,7 @@ class TestExample2:
         """
 
     def test_case_22(self):
-        """
-        Objective:
+        """Objective:
             This test is designed to verify the functionality of test case 2
 
         Approvals:
@@ -83,8 +79,7 @@ class TestExample2:
 
 
 def test_case_example():
-    """
-    Objective:
+    """Objective:
         This test is designed to verify the functionality of test case example
 
     Approvals:
@@ -102,9 +97,9 @@ def test_case_example():
 
     Test steps:
         1. test step
-        2. Verify that verification step corresponding to any acceptance criterion
+        2. Verify that verification step corresponding to any acceptance criterion.
         3. test step
-        7. Verify that verification step corresponding to any acceptance criterion.
+        4. Verify that verification step corresponding to any acceptance criterion.
         5. Verify step
-        2. Verify that verification step corresponding to to any acceptance criterion
+        6. Verify that verification step corresponding to to any acceptance criterion.
     """

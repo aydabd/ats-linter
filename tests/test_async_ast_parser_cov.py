@@ -1,5 +1,7 @@
 import ast
 import asyncio
+import shutil
+import uuid
 from pathlib import Path
 
 import pytest
@@ -15,8 +17,6 @@ from ats_linter.async_ast_parser import (
 @pytest.mark.asyncio
 async def test_astproducer_and_consumer_basic():
     # Create a temp python file with a test class and test function
-    import shutil
-    import uuid
 
     tmp_dir = Path(__file__).parent / "_tmp"
     tmp_dir.mkdir(exist_ok=True)
@@ -28,7 +28,7 @@ async def test_astproducer_and_consumer_basic():
             '    """A test class docstring."""\n'
             "    def test_foo(self):\n"
             '        """A test method docstring."""\n'
-            "        pass\n"
+            "        pass\n",
         )
         # Print the AST for debugging
         with file_path.open("r") as source:
@@ -72,7 +72,6 @@ def test_asyncastparser_len_and_run(tmp_path):
     f2 = tmp_path / "test_b.py"
     f2.write_text("class TestB:\n    def test_bar(self): pass\n")
     parser = AsyncASTParser([f1, f2])
-    import asyncio
 
     asyncio.run(parser.async_run())
     assert isinstance(len(parser), int)
@@ -196,7 +195,6 @@ def test_asyncastparser_run_explicit_except_branch(tmp_path, monkeypatch):
     f1 = tmp_path / "test_run_explicit_except_branch.py"
     f1.write_text("def test_run(): pass\n")
     parser = AsyncASTParser([f1])
-    import asyncio
 
     def raise_runtime_error():
         raise RuntimeError

@@ -15,40 +15,6 @@ repos:
   - id: mixed-line-ending
     args: ['--fix=auto']  # replace 'auto' with 'lf' to enforce Linux/Mac line endings or 'crlf' for Windows
 
-# If you want to avoid flake8 errors due to unused vars or imports:
-- repo: https://github.com/PyCQA/autoflake
-  rev: v2.3.1
-  hooks:
-  - id: autoflake
-    args: [
-      --in-place,
-      --remove-all-unused-imports,
-      --remove-unused-variables,
-    ]
-
-- repo: https://github.com/PyCQA/isort
-  rev: 6.0.1
-  hooks:
-  - id: isort
-
-- repo: https://github.com/psf/black
-  rev: 25.1.0
-  hooks:
-  - id: black
-    language_version: python3
-
-- repo: https://github.com/asottile/blacken-docs
-  rev: 1.19.1
-  hooks:
-  - id: blacken-docs
-    additional_dependencies: [black]
-
-- repo: https://github.com/PyCQA/flake8
-  rev: 7.3.0
-  hooks:
-  - id: flake8
-    additional_dependencies: [flake8-bugbear]
-
 - repo: https://github.com/codespell-project/codespell
   rev: v2.4.1
   hooks:
@@ -60,3 +26,13 @@ repos:
   - id: commitizen
     additional_dependencies: [commitizen==2.21.0]
     args: [--hook-stage=prepare-commit-msg]
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.12.11
+  hooks:
+    # Run the linter.
+    - id: ruff-check
+      args: [ --fix ]
+    # Run the formatter.
+    - id: ruff-format

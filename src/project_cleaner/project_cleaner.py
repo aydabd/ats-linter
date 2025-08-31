@@ -1,12 +1,12 @@
-"""Copyright (c) 2023 Aydin Abdi
+"""Copyright (c) 2023 Aydin Abdi.
 
 A script for cleaning up project directories.
 """
 
 import asyncio
 import shutil
+from contextlib import suppress
 from pathlib import Path
-from typing import List, Set
 
 import aiofiles
 
@@ -33,7 +33,8 @@ FILE_EXTENSIONS = [".pyc", ".egg"]
 class ProjectCleaner:
     """A class for cleaning up project directories.
 
-    Parameters:
+    Parameters
+    ----------
         directories_to_remove: A set of directory names to remove.
         file_extensions_to_remove: A set of file extensions to remove.
 
@@ -44,31 +45,34 @@ class ProjectCleaner:
 
     Examples as script:
         $ python project_cleaner.py
+
     """
 
     def __init__(
         self,
-        directories_to_remove: Set[str] = None,
-        file_extensions_to_remove: Set[str] = None,
+        directories_to_remove: set[str] = None,
+        file_extensions_to_remove: set[str] = None,
     ):
-        """Inits ProjectCleaner with directories and file extensions to remove."""
+        """Initialize ProjectCleaner with directories and file extensions to remove."""
         self.directories_to_remove = directories_to_remove or set()
         self.file_extensions_to_remove = file_extensions_to_remove or set()
 
     async def remove_file(self, file_path: Path):
-        """Removes a file asynchronously.
+        """Remove a file asynchronously.
 
         Args:
             file_path: The path of the file to remove.
+
         """
         if file_path.exists() and file_path.is_file():
             await aiofiles.os.remove(file_path)
 
     async def remove_directories(self, directory_queue: asyncio.Queue):
-        """Consumer function to remove directories from queue.
+        """Remove directories from the queue.
 
         Args:
             directory_queue: asyncio Queue containing directories to remove.
+
         """
         while True:
             directory = await directory_queue.get()
@@ -78,23 +82,27 @@ class ProjectCleaner:
             directory_queue.task_done()
 
     async def produce_directories(
-        self, all_paths: List[Path], directory_queue: asyncio.Queue
+        self,
+        all_paths: list[Path],
+        directory_queue: asyncio.Queue,
     ):
-        """Producer function to add directories to queue.
+        """Add directories to the queue for removal.
 
         Args:
             all_paths: A list of all paths in the root directory.
             directory_queue: asyncio Queue where directories are added.
+
         """
         directories = self.find_directories_to_remove(all_paths)
         for directory in directories:
             await directory_queue.put(directory)
 
     async def clean(self, path: str = "."):
-        """Removes specified directories and files in a given directory.
+        """Remove specified directories and files in a given directory.
 
         Args:
             path: The root directory to clean.
+
         """
         root = Path(path)
         # Create a list of all paths, this will avoid modifying the iterator during loop
@@ -109,7 +117,7 @@ class ProjectCleaner:
 
         # Producer and Consumer tasks
         producer_task = asyncio.create_task(
-            self.produce_directories(all_paths, directory_queue)
+            self.produce_directories(all_paths, directory_queue),
         )
         consumer_task = asyncio.create_task(self.remove_directories(directory_queue))
 
@@ -125,12 +133,10 @@ class ProjectCleaner:
 
         # Cancel the consumer task
         consumer_task.cancel()
-        try:
+        with suppress(asyncio.CancelledError):
             await consumer_task
-        except asyncio.CancelledError:
-            pass
 
-    def find_directories_to_remove(self, all_paths: List[Path]) -> Set[Path]:
+    def find_directories_to_remove(self, all_paths: list[Path]) -> set[Path]:
         """Find directories to remove based on the specified rules.
 
         Args:
@@ -138,6 +144,7 @@ class ProjectCleaner:
 
         Returns:
             A set of directory paths to remove.
+
         """
         directories = set()
         exclude_path = ".tox/clean"
@@ -153,11 +160,12 @@ class ProjectCleaner:
 
         return directories
 
-    async def remove_files_async(self, files: Set[Path]):
-        """Removes a set of files asynchronously.
+    async def remove_files_async(self, files: set[Path]):
+        """Remove a set of files asynchronously.
 
         Args:
             files: A set of file paths to remove.
+
         """
         tasks = [self.remove_file(file) for file in files]
         await asyncio.gather(*tasks)

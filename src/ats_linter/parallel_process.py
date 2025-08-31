@@ -1,4 +1,4 @@
-"""Copyright (c) 2023 Aydin Abdi
+"""Copyright (c) 2023 Aydin Abdi.
 
 FileProcessorCocurrent is a class for processing files in parallel.
 """
@@ -30,6 +30,7 @@ class FileProcessorCocurrent:
         self.async_ast_parser = AsyncASTParser(self.test_file_collector.test_files)
 
     def __len__(self):
+        """Return the total number of test classes in all test modules."""
         total_test_classes = 0
 
         for test_module in self.async_ast_parser.test_modules:
@@ -40,7 +41,9 @@ class FileProcessorCocurrent:
         return len(self.async_ast_parser)
 
     def __iter__(self):
+        """Return an iterator over the test modules."""
         return iter(self.async_ast_parser.test_modules)
 
     def __dict__(self):
+        """Return a dictionary representation of the test modules."""
         return [asdict(m) for m in self.async_ast_parser.test_modules]

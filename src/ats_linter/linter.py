@@ -1,4 +1,4 @@
-"""Copyright (c) 2023 Aydin Abdi
+"""Copyright (c) 2023 Aydin Abdi.
 
 Module to lint test files.
 
@@ -8,7 +8,7 @@ This module provides a class to lint test files.
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass, field
 from threading import Lock
-from typing import Any, Dict, List
+from typing import Any
 
 from loguru import logger
 
@@ -40,9 +40,11 @@ MISMATCH_APPROVALS_VERIFY_ERROR_MESSAGE = (
 class ATSTestCase:
     """Represents a ATS test case.
 
-    Parameters:
+    Parameters
+    ----------
         test_case: The test case.
         test_description: ATS test case description :class: `TestDescription`.
+
     """
 
     test_case: TestCase
@@ -53,15 +55,16 @@ class ATSTestCase:
         from ats_linter.description import TestDescriptionFactory
 
         self.test_description = TestDescriptionFactory.from_docstring(
-            self.test_case.docstring
+            self.test_case.docstring,
         )
         logger.debug(f"ATS test description: {self.test_description}")
 
-    def __dict__(self) -> Dict[str, Any]:
+    def __dict__(self) -> dict[str, Any]:
         """Return the ATS test description as a dict.
 
         Returns:
             The ATS test description as a dict.
+
         """
         return asdict(self.test_description)
 
@@ -70,11 +73,12 @@ class ATSTestCase:
 
         Returns:
             Number of verify steps.
+
         """
         nbr_of_verify_steps = self.test_description.verify_steps.__len__()
         logger.debug(
             f"Verify steps: {self.test_description.verify_steps}, "
-            f"number of verify steps: {nbr_of_verify_steps}"
+            f"number of verify steps: {nbr_of_verify_steps}",
         )
         return nbr_of_verify_steps
 
@@ -83,13 +87,15 @@ class ATSTestCase:
 class ATSTestCasesFactory:
     """Factory class to create :class: `ATSTestCase` objects.
 
-    Parameters:
+    Parameters
+    ----------
         test_cases: The list of :class: `TestCase` objects.
         ats_test_cases: The list of :class: `ATSTestCase` objects.
+
     """
 
-    test_cases: List[TestCase]
-    ats_test_cases: List[ATSTestCase] = field(init=False, default_factory=list)
+    test_cases: list[TestCase]
+    ats_test_cases: list[ATSTestCase] = field(init=False, default_factory=list)
 
     def __post_init__(self):
         """Post init method to create :class: `ATSTestCase` objects."""
@@ -113,6 +119,7 @@ class ATSTestCasesFactory:
 
         Returns:
             The :class: `ATSTestCase` object created from the test case.
+
         """
         return ATSTestCase(test_case)
 
@@ -121,16 +128,19 @@ class ATSTestCasesFactory:
 
         Returns:
             Number of :class: `ATSTestCase` objects.
+
         """
         return len(self.ats_test_cases)
 
 
 @dataclass
 class LintResult:
+    """Class to represent the result of linting a test case."""
+
     module_name: str
     class_name: str
     test_name: str
-    sections: List[Section]
+    sections: list[Section]
     result: bool
 
 
@@ -138,7 +148,8 @@ class LintResult:
 class LintTestCase:
     """Class to lint ATS test cases.
 
-    Parameters:
+    Parameters
+    ----------
         ats_test_case: The ATS test case :class: `ATSTestCase`.
         test_case: The test case :class: `TestCase` to lint.
         test_description: The ATS test case description :class: `TestDescription`.
@@ -157,12 +168,13 @@ class LintTestCase:
             # >>> test_case_linter = LintTestCase(ats_test_case)
             # >>> test_case_linter.lint()
             # >>> test_case_linter.sections
+
     """
 
     ats_test_case: ATSTestCase
     test_case: TestCase = field(init=False)
     test_description: TestDescription = field(init=False)
-    sections: List[Section] = field(init=False, default_factory=list)
+    sections: list[Section] = field(init=False, default_factory=list)
     lint_result: LintResult = field(init=False)
 
     def __post_init__(self):
@@ -180,26 +192,29 @@ class LintTestCase:
 
         Args:
             section: The section to check.
+
         """
         dict_docstring = self.test_description
         try:
             section_content = getattr(
-                dict_docstring, section.name.lower().replace(" ", "_")
+                dict_docstring,
+                section.name.lower().replace(" ", "_"),
             )
             if not section_content:
                 section.error_message = MISSING_SECTION_ERROR_MESSAGE.format(
-                    section_name=section.name
+                    section_name=section.name,
                 )
         except AttributeError:
             section.error_message = MISSING_SECTION_ERROR_MESSAGE.format(
-                section_name=section.name
+                section_name=section.name,
             )
 
-    def _check_sections(self, section_names: List[str]) -> None:
+    def _check_sections(self, section_names: list[str]) -> None:
         """Check the presence of multiple sections in the docstring.
 
         Args:
             section_names: The list of section names to check.
+
         """
         for section_name in section_names:
             section = next(
@@ -231,7 +246,7 @@ class LintTestCase:
                         approvals=nbr_of_approvals,
                         verifies=nbr_of_verify_steps,
                     ),
-                )
+                ),
             )
 
     def lint(self) -> bool:
@@ -239,6 +254,7 @@ class LintTestCase:
 
         Returns:
             True if the test case docstring passes linting, False otherwise.
+
         """
         self._check_mandatory_sections()
         self._check_matching_approvals_and_steps()
@@ -252,13 +268,13 @@ class LintTestCase:
         if failed_sections:
             logger.error(
                 f"Test case '{self.test_case.name}' "
-                "failed linting for the following reasons:"
+                "failed linting for the following reasons:",
             )
             logger.error(
                 "\n".join(
                     f"- {section}: {error}"
                     for section, error in failed_sections.items()
-                )
+                ),
             )
             return False
 
@@ -270,7 +286,8 @@ class LintTestCase:
 class ATSTestCasesLinter:
     """Class to lint multiple ATS test cases.
 
-    Parameters:
+    Parameters
+    ----------
         ats_test_cases: The list of ATS test cases to lint.
 
         Example:
@@ -290,10 +307,11 @@ class ATSTestCasesLinter:
             # >>> factory = ATSTestCasesFactory([test_case_1, test_case_2])
             # >>> ats_test_cases_linter = ATSTestCasesLinter(factory.ats_test_cases)
             # >>> ats_test_cases_linter.lint()
+
     """
 
-    ats_test_cases: List[ATSTestCase]
-    lint_results: Dict[str, Any] = field(init=False, default_factory=dict)
+    ats_test_cases: list[ATSTestCase]
+    lint_results: dict[str, Any] = field(init=False, default_factory=dict)
 
     def __post_init__(self):
         """Post init method to lint ATS test cases in parallel."""
@@ -304,6 +322,7 @@ class ATSTestCasesLinter:
 
         Returns:
             True if the test case docstring passes linting, False otherwise.
+
         """
         if not self.ats_test_cases:
             return True
@@ -315,7 +334,10 @@ class ATSTestCasesLinter:
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             futures = [
                 executor.submit(
-                    lint_ats_test_case, ats_test_case, self.lint_results, lock
+                    lint_ats_test_case,
+                    ats_test_case,
+                    self.lint_results,
+                    lock,
                 )
                 for ats_test_case in self.ats_test_cases
             ]
@@ -327,15 +349,20 @@ class ATSTestCasesLinter:
 
 # Module-level function for direct import and testing
 def lint_ats_test_case(
-    ats_test_case: "ATSTestCase", lint_results: Dict[str, Any], lock: Lock
+    ats_test_case: "ATSTestCase",
+    lint_results: dict[str, Any],
+    lock: Lock,
 ) -> bool:
     """Lint a single test case.
 
     Args:
-        test_case: The test case to lint.
+        ats_test_case: The ATS test case to lint.
+        lint_results: The dictionary to store linting results.
+        lock: The lock to ensure thread-safe access to the results dictionary.
 
     Returns:
         True if the test case passes linting, False otherwise.
+
     """
     lint_result = False
     try:

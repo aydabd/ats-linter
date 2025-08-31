@@ -4,9 +4,7 @@ from ats_linter.file_collector import PYTHON_FILE_EXTENSION, FileCollector
 
 
 def test_post_init(file_collector: FileCollector, tmp_path) -> None:
-    """
-    Test that the __post_init__ method correctly initializes a FileCollector.
-    """
+    """Test that the __post_init__ method correctly initializes a FileCollector."""
     expected_test_files = 3
     expected_test_directories = 2
     assert len(file_collector.test_files) == expected_test_files
@@ -22,8 +20,7 @@ def test_post_init(file_collector: FileCollector, tmp_path) -> None:
 
 
 def test_get_path_from_string() -> None:
-    """
-    Test that the get_path_from_string method correctly
+    """Test that the get_path_from_string method correctly
     converts a string path to a Path object.
     """
     input_path_string = "test_path"
@@ -34,9 +31,7 @@ def test_get_path_from_string() -> None:
 
 
 def test_is_test_file(mock_files: Path) -> None:
-    """
-    Test that the is_test_file method correctly identifies test files.
-    """
+    """Test that the is_test_file method correctly identifies test files."""
     test_file = mock_files / "test_dir1" / "test_file1.py"
     non_test_file = mock_files / "dir3" / "file4.py"
     assert FileCollector.is_test_file(test_file) is True
@@ -48,9 +43,7 @@ def test_is_test_directory(
     non_test_directory: Path,
     non_test_directory_with_test_prefix: Path,
 ) -> None:
-    """
-    Test the `is_test_directory` method of the `FileCollector` class.
-    """
+    """Test the `is_test_directory` method of the `FileCollector` class."""
     # Check if the test directory is recognized as a test directory
     assert FileCollector.is_test_directory(test_directory)
 
@@ -63,8 +56,7 @@ def test_is_test_directory(
 
 
 def test_process_directory(mock_files: Path) -> None:
-    """
-    Test that the process_directory method correctly processes
+    """Test that the process_directory method correctly processes
     a directory and returns it if it is a test directory.
     """
     test_dir = mock_files / "test_dir1"
@@ -79,10 +71,11 @@ def test_process_directory(mock_files: Path) -> None:
 
 
 def test_collect_test_directories_and_files_in_parallel(
-    mocker, mock_files: Path, file_collector: FileCollector
+    mocker,
+    mock_files: Path,
+    file_collector: FileCollector,
 ) -> None:
-    """
-    Test that the collect_test_directories_and_files_in_parallel method correctly
+    """Test that the collect_test_directories_and_files_in_parallel method correctly
     collects all test directories and files in parallel.
     """
     expected_directory_files = [
@@ -97,7 +90,9 @@ def test_collect_test_directories_and_files_in_parallel(
         (None, []),
     ]
     mocker.patch.object(
-        FileCollector, "process_directory", side_effect=expected_directory_files
+        FileCollector,
+        "process_directory",
+        side_effect=expected_directory_files,
     )
 
     # Reset test_files before collecting
@@ -113,32 +108,24 @@ def test_collect_test_directories_and_files_in_parallel(
 
 
 def test_len(file_collector: FileCollector) -> None:
-    """
-    Test that the __len__ method correctly returns the number of test files.
-    """
+    """Test that the __len__ method correctly returns the number of test files."""
     expected_length = 3
     assert len(file_collector) == expected_length
 
 
 def test_iter(file_collector: FileCollector) -> None:
-    """
-    Test that the __iter__ method correctly returns an iterator for the test files.
-    """
+    """Test __iter__ returns an iterator over test files."""
     expected_files = file_collector.test_files
     assert list(file_collector) == expected_files
 
 
 def test_root_file_path_is_file(file_collector: FileCollector) -> None:
-    """
-    Test when the root_file_path is a file.
-    """
+    """Test when the root_file_path is a file."""
     assert len(file_collector.test_files) == 3
 
 
 def test_root_file_path_does_not_exist() -> None:
-    """
-    Test when the root_file_path does not exist.
-    """
+    """Test when the root_file_path does not exist."""
     fc = FileCollector("non_existent_path")
     assert len(fc.test_files) == 0
 

@@ -1,4 +1,4 @@
-"""Copyright (c) 2023 Aydin Abdi
+"""Copyright (c) 2023 Aydin Abdi.
 
 ASTTestModuleFactory is a factory class for creating test modules
 based on Python's AST (Abstract Syntax Tree).
@@ -9,8 +9,8 @@ fixtures based on pytest fixtures.
 """
 
 import ast
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from typing import Callable, List, Sequence
 
 from ats_linter.data_classes import Entity, PytestFixture, TestCase, TestClass
 
@@ -32,7 +32,7 @@ class ASTTestModuleFactory:
     """
 
     @staticmethod
-    def get_test_classes(nodes: List[ast.AST]) -> List[ast.ClassDef]:
+    def get_test_classes(nodes: list[ast.AST]) -> list[ast.ClassDef]:
         """Get test classes from a list of AST nodes.
 
         Args:
@@ -40,6 +40,7 @@ class ASTTestModuleFactory:
 
         Returns:
             The test classes from the list of nodes.
+
         """
         return [
             node
@@ -49,7 +50,7 @@ class ASTTestModuleFactory:
         ]
 
     @staticmethod
-    def get_function_nodes(nodes: List[ast.AST]) -> List[ast.FunctionDef]:
+    def get_function_nodes(nodes: list[ast.AST]) -> list[ast.FunctionDef]:
         """Get function nodes from a list of AST nodes.
 
         Args:
@@ -57,6 +58,7 @@ class ASTTestModuleFactory:
 
         Returns:
             The function nodes from the list of nodes.
+
         """
         return [node for node in nodes if isinstance(node, ast.FunctionDef)]
 
@@ -69,6 +71,7 @@ class ASTTestModuleFactory:
 
         Returns:
             Boolean value indicating whether the node is a test case.
+
         """
         ast.AST.node = node  # type: ignore
         return node.name.lower().startswith(TEST_PREFIX)  # type: ignore
@@ -82,6 +85,7 @@ class ASTTestModuleFactory:
 
         Returns:
             Boolean value indicating whether the node is a pytest fixture.
+
         """
         return any(
             isinstance(deco, ast.Call)
@@ -95,8 +99,8 @@ class ASTTestModuleFactory:
     # type: ignore
     @staticmethod
     def parse_test_classes(
-        test_classes: List[ast.ClassDef],
-    ) -> List[TestClass]:
+        test_classes: list[ast.ClassDef],
+    ) -> list[TestClass]:
         """Parse test classes.
 
         Args:
@@ -104,6 +108,7 @@ class ASTTestModuleFactory:
 
         Returns:
             The parsed test classes.
+
         """
         parsed_test_classes = []
         for test_class in test_classes:
@@ -112,10 +117,14 @@ class ASTTestModuleFactory:
                 test_class.name,
                 ast.get_docstring(test_class),
                 ASTTestModuleFactory.extract_entities(
-                    class_nodes, TestCase, ASTTestModuleFactory.is_test_case
+                    class_nodes,
+                    TestCase,
+                    ASTTestModuleFactory.is_test_case,
                 ),
                 ASTTestModuleFactory.extract_entities(
-                    class_nodes, PytestFixture, ASTTestModuleFactory.is_pytest_fixture
+                    class_nodes,
+                    PytestFixture,
+                    ASTTestModuleFactory.is_pytest_fixture,
                 ),
             )
             parsed_test_classes.append(parsed_test_class)
@@ -123,7 +132,9 @@ class ASTTestModuleFactory:
 
     @staticmethod
     def extract_entities(
-        nodes: List[ast.AST], entity_class: Entity, condition: Callable[[ast.AST], bool]
+        nodes: list[ast.AST],
+        entity_class: Entity,
+        condition: Callable[[ast.AST], bool],
     ) -> Sequence[Entity]:
         """Extract entities of a given type from the list of nodes.
 
@@ -134,6 +145,7 @@ class ASTTestModuleFactory:
 
         Returns:
             A list of entity instances extracted from the nodes.
+
         """
         entities = []
         for node in nodes:
@@ -145,7 +157,7 @@ class ASTTestModuleFactory:
                         ast.unparse(line)
                         for line in node.body
                         if not isinstance(line, ast.Expr)
-                    ]
+                    ],
                 )
                 entities.append(entity_class(node.name, docstring, code))
         return entities

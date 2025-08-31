@@ -25,7 +25,8 @@ def test_file_processor_cocurrent_len_and_iter(monkeypatch, tmp_path):
     # Patch dependencies
     monkeypatch.setattr("ats_linter.parallel_process.FileCollector", DummyFileCollector)
     monkeypatch.setattr(
-        "ats_linter.parallel_process.AsyncASTParser", DummyAsyncASTParser
+        "ats_linter.parallel_process.AsyncASTParser",
+        DummyAsyncASTParser,
     )
     processor = FileProcessorCocurrent(str(tmp_path))
     assert len(processor) == 42
@@ -37,7 +38,8 @@ def test_file_processor_cocurrent_len_and_iter(monkeypatch, tmp_path):
 def test_file_processor_cocurrent_dict(monkeypatch, tmp_path):
     monkeypatch.setattr("ats_linter.parallel_process.FileCollector", DummyFileCollector)
     monkeypatch.setattr(
-        "ats_linter.parallel_process.AsyncASTParser", DummyAsyncASTParser
+        "ats_linter.parallel_process.AsyncASTParser",
+        DummyAsyncASTParser,
     )
     processor = FileProcessorCocurrent(str(tmp_path))
     d = processor.__dict__()

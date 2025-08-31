@@ -1,4 +1,4 @@
-"""Copyright (c) 2023 Aydin Abdi
+"""Copyright (c) 2023 Aydin Abdi.
 
 Cli is the command line interface for the linter.
 """
@@ -15,7 +15,7 @@ FILE_PATH = "tests/"
 
 
 def main():
-    """The main routine."""
+    """Run main."""
     logger.debug("Running the linter...")
 
     try:
@@ -44,6 +44,7 @@ def main():
 
 
 def run():
+    """Run the linter."""
     main()
 
 

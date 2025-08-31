@@ -83,10 +83,14 @@ def my_fixture(): """doc"""; pass
 '''
     nodes = make_ast_nodes(src)
     test_cases = ASTTestModuleFactory.extract_entities(
-        nodes, TestCase, ASTTestModuleFactory.is_test_case
+        nodes,
+        TestCase,
+        ASTTestModuleFactory.is_test_case,
     )
     fixtures = ASTTestModuleFactory.extract_entities(
-        nodes, PytestFixture, ASTTestModuleFactory.is_pytest_fixture
+        nodes,
+        PytestFixture,
+        ASTTestModuleFactory.is_pytest_fixture,
     )
     assert len(test_cases) == 1
     assert test_cases[0].name == "test_foo"

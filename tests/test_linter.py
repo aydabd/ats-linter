@@ -1,3 +1,6 @@
+import threading
+
+import ats_linter.linter as linter_mod
 from ats_linter.data_classes import TestCase
 from ats_linter.description import (
     SECTION_APPROVALS,
@@ -5,17 +8,19 @@ from ats_linter.description import (
     SECTION_TEST_STEPS,
 )
 from ats_linter.linter import (
+    MANDATORY_SECTIONS,
     ATSTestCase,
     ATSTestCasesFactory,
     ATSTestCasesLinter,
     LintTestCase,
+    lint_ats_test_case,
 )
 
 
 def make_docstring(sections):
     doc = []
     for name, content in sections.items():
-        doc.append(f"{name}:")  # noqa: E231
+        doc.append(f"{name}:")
         for line in content.splitlines():
             doc.append(f"    {line}")
     return "\n".join(doc)
@@ -57,10 +62,12 @@ def test_linttestcase_missing_sections():
         {
             SECTION_OBJECTIVE: "obj",
             SECTION_TEST_STEPS: "1. Do something\n2. Verify that step 1",
-        }
+        },
     )
     tc = TestCase(
-        name="test_missing", docstring=docstring, code="def test_missing(): pass"
+        name="test_missing",
+        docstring=docstring,
+        code="def test_missing(): pass",
     )
     ats = ATSTestCase(tc)
     linter = LintTestCase(ats)
@@ -77,10 +84,12 @@ def test_linttestcase_mismatched_approvals_and_steps():
                 "1. Do something\n2. Verify that step 1\n3. Do something else\n"
                 "4. Verify that step 2"
             ),
-        }
+        },
     )
     tc = TestCase(
-        name="test_mismatch", docstring=docstring, code="def test_mismatch(): pass"
+        name="test_mismatch",
+        docstring=docstring,
+        code="def test_mismatch(): pass",
     )
     ats = ATSTestCase(tc)
     linter = LintTestCase(ats)
@@ -89,8 +98,6 @@ def test_linttestcase_mismatched_approvals_and_steps():
 
 
 def test_check_section_presence_attribute_error():
-    from ats_linter.linter import LintTestCase
-
     class DummySection:
         name = "Nonexistent"
         error_message = None
@@ -106,8 +113,6 @@ def test_check_section_presence_attribute_error():
 
 
 def test_check_sections_with_none():
-    from ats_linter.linter import MANDATORY_SECTIONS, LintTestCase
-
     class DummySection:
         def __init__(self, name):
             self.name = name
@@ -118,18 +123,15 @@ def test_check_sections_with_none():
     # Add a section that is not in MANDATORY_SECTIONS to trigger None
     linter.sections.append(DummySection("NotMandatory"))
     linter.test_description = type(
-        "Dummy", (), {s.lower().replace(" ", "_"): True for s in MANDATORY_SECTIONS}
+        "Dummy",
+        (),
+        {s.lower().replace(" ", "_"): True for s in MANDATORY_SECTIONS},
     )()
     linter._check_sections(MANDATORY_SECTIONS + ["NotMandatory"])
     # Should not raise
 
 
 def test_lint_ats_test_case_exception():
-    import threading
-
-    from ats_linter.data_classes import TestCase
-    from ats_linter.linter import ATSTestCase, LintTestCase, lint_ats_test_case
-
     class BadLintTestCase(LintTestCase):
         def lint(self):
             raise ValueError("fail lint")
@@ -156,15 +158,13 @@ def test_lint_ats_test_case_exception():
 
 def test_atstestcaseslinter_lint_all_pass(monkeypatch):
     # Patch lint_ats_test_case to always return True
-    import ats_linter.linter as linter_mod
-    from ats_linter.data_classes import TestCase
-    from ats_linter.linter import ATSTestCase, ATSTestCasesLinter
-
     orig = linter_mod.lint_ats_test_case
     linter_mod.lint_ats_test_case = lambda *a, **kw: True
     try:
         tc1 = TestCase(
-            name="test_foo", docstring="Objective:\nfoo", code="def test_foo(): pass"
+            name="test_foo",
+            docstring="Objective:\nfoo",
+            code="def test_foo(): pass",
         )
         ats1 = ATSTestCase(tc1)
         linter = ATSTestCasesLinter([ats1])
@@ -174,18 +174,18 @@ def test_atstestcaseslinter_lint_all_pass(monkeypatch):
 
 
 def test_atstestcaseslinter_lint_multiple_workers(monkeypatch):
-    import ats_linter.linter as linter_mod
-    from ats_linter.data_classes import TestCase
-    from ats_linter.linter import ATSTestCase, ATSTestCasesLinter
-
     orig = linter_mod.lint_ats_test_case
     linter_mod.lint_ats_test_case = lambda *a, **kw: True
     try:
         tc1 = TestCase(
-            name="test_foo", docstring="Objective:\nfoo", code="def test_foo(): pass"
+            name="test_foo",
+            docstring="Objective:\nfoo",
+            code="def test_foo(): pass",
         )
         tc2 = TestCase(
-            name="test_bar", docstring="Objective:\nbar", code="def test_bar(): pass"
+            name="test_bar",
+            docstring="Objective:\nbar",
+            code="def test_bar(): pass",
         )
         ats1 = ATSTestCase(tc1)
         ats2 = ATSTestCase(tc2)
@@ -196,7 +196,5 @@ def test_atstestcaseslinter_lint_multiple_workers(monkeypatch):
 
 
 def test_atstestcaseslinter_lint_empty():
-    from ats_linter.linter import ATSTestCasesLinter
-
     linter = ATSTestCasesLinter([])
     assert linter.lint() is True

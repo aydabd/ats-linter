@@ -1,22 +1,24 @@
-"""Copyright (c) 2023 Aydin Abdi
+"""Copyright (c) 2023 Aydin Abdi.
 
 This module defines the data classes used in this module.
 """
 
 from dataclasses import asdict, dataclass
-from typing import Dict, List, Optional, Union
 
 
 @dataclass(frozen=True)
 class TestCase:
-    __test__ = False
     """Represent a test case.
 
-    Parameters:
+    Parameters
+    ----------
         name: The name of the test case.
         docstring: The docstring of the test case.
         code: The code of the test case.
+
     """
+
+    __test__ = False
 
     name: str
     docstring: str
@@ -27,14 +29,16 @@ class TestCase:
 class PytestFixture:
     """Represent a pytest fixture.
 
-    Parameters:
+    Parameters
+    ----------
         name: The name of the fixture.
         docstring: The docstring of the fixture.
         code: The code of the fixture.
+
     """
 
     name: str
-    docstring: Optional[str]
+    docstring: str | None
     code: str
 
 
@@ -42,47 +46,54 @@ class PytestFixture:
 class Entity:
     """Represent a generic entity in a test module.
 
-    Parameters:
+    Parameters
+    ----------
         name: The name of the entity.
         docstring: The docstring of the entity.
         code: The code of the entity.
+
     """
 
     name: str
-    docstring: Optional[str]
+    docstring: str | None
     code: str
 
 
 @dataclass(frozen=True)
 class TestClass:
-    __test__ = False
     """Represent a test class.
 
-    Parameters:
+    Parameters
+    ----------
         name: The name of the test class.
         docstring: The docstring of the test class.
         test_cases: The list of test cases in the class.
         fixtures: The list of fixtures in the class.
+
     """
 
+    __test__ = False
+
     name: str
-    docstring: Optional[str]
-    test_cases: List[TestCase]
-    fixtures: List[PytestFixture]
+    docstring: str | None
+    test_cases: list[TestCase]
+    fixtures: list[PytestFixture]
 
     def __len__(self) -> int:
         """Return the number of test cases.
 
         Returns:
             The number of test cases.
+
         """
         return len(self.test_cases)
 
-    def __dict__(self) -> Dict[str, Union[int, List[Dict[str, str]]]]:  # type: ignore
+    def __dict__(self) -> dict[str, int | list[dict[str, str]]]:  # type: ignore
         """Return the test class as a dict.
 
         Returns:
             The test class as a dict.
+
         """
         return {
             "test_cases": [asdict(test_case) for test_case in self.test_cases],
@@ -94,26 +105,30 @@ class TestClass:
 
 @dataclass(frozen=True)
 class TestModule:
-    __test__ = False
     """Represent a test module.
 
-    Parameters:
+    Parameters
+    ----------
         name: The name of the module.
         test_classes: The list of test classes in the module.
         test_cases: The list of test cases in the module.
         fixtures: The list of fixtures in the module.
+
     """
 
+    __test__ = False
+
     name: str
-    test_classes: List[TestClass]
-    test_cases: List[TestCase]
-    fixtures: List[PytestFixture]
+    test_classes: list[TestClass]
+    test_cases: list[TestCase]
+    fixtures: list[PytestFixture]
 
     def __len__(self) -> int:
         """Return the number of test cases.
 
         Returns:
             The number of test cases
+
         """
         amount_of_test_cases = 0
         for test_class in self.test_classes:
@@ -121,11 +136,12 @@ class TestModule:
         amount_of_test_cases += len(self.test_cases)
         return amount_of_test_cases
 
-    def __dict__(self) -> Dict[str, Union[str, List[Dict[str, str]]]]:  # type: ignore
+    def __dict__(self) -> dict[str, str | list[dict[str, str]]]:  # type: ignore
         """Return the test module as a dict.
 
         Returns:
             The test module as a dict.
+
         """
         return {
             "test_module": self.name,
@@ -139,19 +155,22 @@ class TestModule:
 class Section:
     """Represent a section in a test description for MHSTestLinter.
 
-    Parameters:
+    Parameters
+    ----------
         name: The name of the section.
         error_message: The error message of the section.
+
     """
 
     name: str
-    error_message: Optional[str]
+    error_message: str | None
 
-    def __dict__(self) -> Dict[str, Optional[str]]:  # type: ignore
+    def __dict__(self) -> dict[str, str | None]:  # type: ignore
         """Return the section as a dict.
 
         Returns:
             The section as a dict.
+
         """
         return {
             "name": self.name,

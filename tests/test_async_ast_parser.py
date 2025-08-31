@@ -35,7 +35,7 @@ async def test_astproducer_and_consumer(tmp_path):
     test_file.write_text(
         """
 def test_foo(): pass
-"""
+""",
     )
     # Producer
     producer = ASTProducer([test_file])
@@ -60,7 +60,7 @@ async def test_async_ast_parser(tmp_path):
     test_file.write_text(
         """
 def test_bar(): pass
-"""
+""",
     )
     # Use the async factory method for testing
     parser = await AsyncASTParser.from_files([test_file])
