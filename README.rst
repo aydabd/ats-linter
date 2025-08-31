@@ -1,4 +1,4 @@
-# .. image:: https://github.com/aydabd/ats-linter/actions/workflows/ci.yml/badge.svg?branch=main
+.. image:: https://github.com/aydabd/ats-linter/actions/workflows/ci.yml/badge.svg?branch=main
    :target: https://github.com/aydabd/ats-linter/actions/workflows/ci.yml
    :alt: CI Status
 
