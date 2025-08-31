@@ -256,6 +256,19 @@ class LintTestCase:
             True if the test case docstring passes linting, False otherwise.
 
         """
+        # Check for missing docstring
+        if not self.test_case.docstring or not self.test_case.docstring.strip():
+            self.sections.append(
+                Section(
+                    name="docstring",
+                    error_message="Missing docstring for test case.",
+                )
+            )
+            logger.error(
+                f"Test case '{self.test_case.name}' failed linting: Missing docstring."
+            )
+            return False
+
         self._check_mandatory_sections()
         self._check_matching_approvals_and_steps()
 
