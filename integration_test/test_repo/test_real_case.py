@@ -1,6 +1,7 @@
 def add(a, b):
     return a + b
 
+
 def test_add_success():
     """Objective:
         Ensure addition works as expected.
@@ -13,6 +14,7 @@ def test_add_success():
         2. Verify that the sum is correct
     """
     assert add(2, 3) == 5
+
 
 def test_add_pass():
     """Objective:

@@ -1,6 +1,3 @@
-import pytest
-
-
 def test_valid_case():
     """Objective:
         Ensure addition works as expected.
@@ -16,6 +13,7 @@ def test_valid_case():
         2. Verify that the sum is correct
     """
     assert 2 + 2 == 4
+
 
 def test_also_valid():
     """Objective:

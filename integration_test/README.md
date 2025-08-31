@@ -2,7 +2,7 @@
 # Integration Test for ats-linter
 
 This integration test builds a Docker image that:
-- Installs ats-linter from the local source  
+- Installs ats-linter from the local source
 - Provides a flexible container to test against any external test directory
 - Can be used with the included sample test repo or your own test files
 
@@ -33,7 +33,7 @@ docker run --rm -v "$(pwd)/integration_test/test_repo:/test_repo" ats-linter-int
 ### Option 2: Test with your own test directory
 
 ```sh
-# Build the Docker image  
+# Build the Docker image
 docker build -f integration_test/Dockerfile -t ats-linter-integration .
 
 # Run against your own test directory
