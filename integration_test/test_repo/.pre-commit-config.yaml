@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ats-linter
+        name: Automated Test Schema Linter
+        entry: ats-linter
+        language: python
+        types: [python]
+        files: ^test_.*\.py$
