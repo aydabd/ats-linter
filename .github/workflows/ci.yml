@@ -77,6 +77,16 @@ jobs:
           pip install --timeout=300 tox
           tox
 
+      - name: Upload coverage to Codecov
+        if: matrix.python-version == '3.12'
+        uses: codecov/codecov-action@v5
+        with:
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   integration-test:
     name: Integration test (Docker)
     needs: [prepare, test]

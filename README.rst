@@ -2,6 +2,58 @@
    :target: https://github.com/aydabd/ats-linter/actions/workflows/ci.yml
    :alt: CI Status
 
+.. image:: https://codecov.io/gh/aydabd/ats-linter/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/aydabd/ats-linter
+   :alt: Coverage Status
+
+.. image:: https://img.shields.io/pypi/v/ats-linter.svg
+   :target: https://pypi.org/project/ats-linter/
+   :alt: PyPI Version
+
+.. image:: https://img.shields.io/pypi/pyversions/ats-linter.svg
+   :target: https://pypi.org/project/ats-linter/
+   :alt: Python Versions
+
+.. image:: https://img.shields.io/pypi/dm/ats-linter.svg
+   :target: https://pypi.org/project/ats-linter/
+   :alt: Monthly Downloads
+
+.. image:: https://img.shields.io/github/license/aydabd/ats-linter.svg
+   :target: https://github.com/aydabd/ats-linter/blob/main/LICENSE
+   :alt: License
+
+.. image:: https://img.shields.io/badge/code%20style-ruff-000000.svg
+   :target: https://github.com/astral-sh/ruff
+   :alt: Code Style: Ruff
+
+.. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+   :target: https://github.com/pre-commit/pre-commit
+   :alt: Pre-commit Enabled
+
+.. image:: https://img.shields.io/badge/docs-sphinx-blue.svg
+   :target: https://ats-linter.readthedocs.io/
+   :alt: Documentation
+
+.. image:: https://img.shields.io/github/repo-size/aydabd/ats-linter.svg
+   :target: https://github.com/aydabd/ats-linter
+   :alt: Repository Size
+
+.. image:: https://img.shields.io/github/last-commit/aydabd/ats-linter.svg
+   :target: https://github.com/aydabd/ats-linter/commits/main
+   :alt: Last Commit
+
+.. image:: https://img.shields.io/github/issues/aydabd/ats-linter.svg
+   :target: https://github.com/aydabd/ats-linter/issues
+   :alt: Open Issues
+
+.. image:: https://img.shields.io/badge/Docker-integrated-blue?logo=docker
+   :target: https://github.com/aydabd/ats-linter/tree/main/integration_test
+   :alt: Docker Integration
+
+.. image:: https://img.shields.io/badge/CLI-Typer-ff69b4?logo=python
+   :target: https://typer.tiangolo.com/
+   :alt: Modern CLI with Typer
+
 ============
 Introduction
 ============
