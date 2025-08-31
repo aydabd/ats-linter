@@ -1,0 +1,9 @@
+- id: ats-linter
+  name: Automated Test Schema Linter
+  description: Lint Python test descriptions and test code with schema from a test template.
+  entry: ats-linter
+  language: python
+  language_version: python3
+  types: [python]
+  include: ^test_.*\.py$
+  args: []
