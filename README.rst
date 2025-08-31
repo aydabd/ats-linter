@@ -21,7 +21,7 @@ installation to your test development environment by `pip`_ or `micromamba`_.
 
 
 Environment Setup
-----------------
+-----------------
 
 It is recommended to use an isolated environment for development. This project uses `micromamba` for fast, reproducible environment management.
 
@@ -87,3 +87,5 @@ Check `installation-guide`_.
 .. _venv: https://docs.python.org/3/library/venv.html
 .. _installation-guide: https://ats-linter.readthedocs.io/en/latest/
 .. _pre-commit: https://pre-commit.com/
+.. _conda-forge: https://conda-forge.org/
+.. _micromamba: https://mamba.readthedocs.io/en/latest/index.html

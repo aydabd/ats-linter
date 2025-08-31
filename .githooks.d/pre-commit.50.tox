@@ -15,7 +15,7 @@ if command -v micromamba &> /dev/null; then
     eval "$(micromamba shell hook -s posix)"
     micromamba activate ats-linter
 fi
-python3 -m tox -p auto -e lint,py312
+python3 -m tox -p auto -e lint,py312,docs
 
 status=$?
 if [ $status -ne 0 ]; then
