@@ -158,5 +158,8 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/" + python_version, None),
     "setuptools": ("https://setuptools.pypa.io/en/stable/", None),
 }
+linkcheck_ignore = [
+    r"https://github.com/aydabd/ats-linter/commits/main",
+]
 
 print(f"loading configurations for {project} {version} ...", file=sys.stderr)
