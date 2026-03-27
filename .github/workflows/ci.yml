@@ -134,6 +134,13 @@ jobs:
 
   build:
     needs: [prepare, test, e2e-test, integration-test]
+    # Run whenever all needed jobs either passed or were intentionally skipped
+    # (integration-test is skipped on schedule/workflow_dispatch events).
+    # Without this condition, GitHub Actions cascades the skip to build as well.
+    if: >-
+      always() &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
     name: Build on linux
     runs-on: ubuntu-latest
     strategy:
