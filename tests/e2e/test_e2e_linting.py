@@ -139,7 +139,6 @@ def _make_module(test_functions: list[tuple[str, str | None]]) -> str:
 
     Returns:
         A Python source string ready to be written to a .py file.
-
     """
     lines = []
     for name, docstring in test_functions:
@@ -160,7 +159,6 @@ def _make_class_module(class_name: str, methods: list[tuple[str, str | None]]) -
 
     Returns:
         A Python source string ready to be written to a .py file.
-
     """
     lines = [f"class {class_name}:"]
     for name, docstring in methods:

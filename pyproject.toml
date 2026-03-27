@@ -141,6 +141,13 @@ combine-as-imports = true
     "ANN001", "ARG002", "PLR2004",
     "EXE002", "ARG005", "ERA001", "ARG001",
     "ANN202", "EM101", "TRY003"]
+"tests/e2e/*.py" = [
+    "D101", "D1", "S1",
+    "ANN201", "ANN204", "D4",
+    "D207", "D205", "INP001",
+    "ANN001", "ARG002", "PLR2004",
+    "EXE002", "ARG005", "ERA001", "ARG001",
+    "ANN202", "EM101", "TRY003"]
 
 [tool.ruff.format]
 quote-style = "double"
