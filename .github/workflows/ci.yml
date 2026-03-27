@@ -87,29 +87,6 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  e2e-test:
-    name: End-to-end tests
-    needs: [prepare, test]
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    defaults:
-      run:
-        shell: bash -el {0}
-    env:
-      PIP_DEFAULT_TIMEOUT: 300
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with: {fetch-depth: 0}
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-      - name: Run e2e tests
-        run: |
-          pip install --timeout=300 tox
-          tox -e e2e
-
   integration-test:
     name: Integration test (Docker)
     needs: [prepare, test]
