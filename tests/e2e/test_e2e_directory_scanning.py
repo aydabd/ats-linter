@@ -40,7 +40,8 @@ class TestDirectoryWithAllCompliantFiles:
             2. Invoke ats-linter against the directory path
             3. Verify that the exit code is 0
         """
-        for module_name in ("test_module_alpha", "test_module_beta", "test_module_gamma"):
+        module_names = ("test_module_alpha", "test_module_beta", "test_module_gamma")
+        for module_name in module_names:
             (tmp_path / f"{module_name}.py").write_text(
                 make_test_module([(module_name, ats_minimal_docstring)])
             )
