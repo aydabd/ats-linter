@@ -132,7 +132,9 @@ class TestMissingMandatorySectionsAreRejected:
             3. Verify that the exit code is 1
             4. Verify that all three mandatory section names appear in the output
         """
-        plain_prose_docstring = "This test checks something important but has no ATS structure."
+        plain_prose_docstring = (
+            "This test checks something important but has no ATS structure."
+        )
         test_file = write_test_file(
             "test_plain_prose.py",
             make_test_module([("test_plain_prose", plain_prose_docstring)]),

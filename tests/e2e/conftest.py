@@ -120,7 +120,9 @@ def ats_minimal_docstring() -> str:
     Example::
 
         def test_something(write_test_file, run_linter, ats_minimal_docstring):
-            f = write_test_file("test_x.py", make_test_module([("test_x", ats_minimal_docstring)]))
+            f = write_test_file(
+                "test_x.py", make_test_module([("test_x", ats_minimal_docstring)])
+            )
             assert run_linter(str(f)).exit_code == 0
     """
     return textwrap.dedent(
@@ -140,7 +142,9 @@ def ats_minimal_docstring() -> str:
 
 @pytest.fixture
 def ats_docstring_with_preconditions() -> str:
-    """Return a fully-compliant ATS docstring that includes the optional Preconditions section."""
+    """Return a fully-compliant ATS docstring that includes the optional
+    Preconditions section.
+    """
     return textwrap.dedent(
         """\
         Objective:
@@ -163,7 +167,9 @@ def ats_docstring_with_preconditions() -> str:
 
 @pytest.fixture
 def ats_docstring_with_data_driven() -> str:
-    """Return a fully-compliant ATS docstring that includes the optional Data-driven-test section."""
+    """Return a fully-compliant ATS docstring that includes the optional
+    Data-driven-test section.
+    """
     return textwrap.dedent(
         """\
         Objective:
@@ -187,7 +193,9 @@ def ats_docstring_with_data_driven() -> str:
 
 @pytest.fixture
 def ats_docstring_with_matched_approvals() -> str:
-    """Return an ATS docstring where the Approvals count exactly equals the verify-step count."""
+    """Return an ATS docstring where the Approvals count exactly equals the
+    verify-step count.
+    """
     return textwrap.dedent(
         """\
         Objective:
@@ -271,7 +279,7 @@ DOCSTRING_MISMATCHED_APPROVALS_AND_VERIFY_STEPS = textwrap.dedent(
 
 
 def make_test_module(functions: list[tuple[str, str | None]]) -> str:
-    """Render a Python source string containing the given test functions.
+    r"""Render a Python source string containing the given test functions.
 
     Each element of *functions* is a ``(name, docstring)`` pair.  Pass
     ``None`` as the docstring to generate a function with no docstring at all.
@@ -285,7 +293,10 @@ def make_test_module(functions: list[tuple[str, str | None]]) -> str:
     Example::
 
         src = make_test_module([
-            ("test_add", "Objective:\\n    ...\\n\\nApprovals:\\n    - ...\\n\\nTest steps:\\n    1. ..."),
+            (
+                "test_add",
+                "Objective:\n    ...\n\nApprovals:\n    ...\n\nTest steps:\n    1. ...",
+            ),
             ("test_sub", None),  # no docstring — will fail linting
         ])
     """
@@ -299,7 +310,9 @@ def make_test_module(functions: list[tuple[str, str | None]]) -> str:
     return "\n".join(lines)
 
 
-def make_test_class_module(class_name: str, methods: list[tuple[str, str | None]]) -> str:
+def make_test_class_module(
+    class_name: str, methods: list[tuple[str, str | None]]
+) -> str:
     """Render a Python source string containing a single test class.
 
     The class must be named with a ``Test`` prefix so the linter recognises it.

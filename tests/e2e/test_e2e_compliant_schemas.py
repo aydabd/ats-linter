@@ -18,16 +18,15 @@ import textwrap
 import pytest
 
 from tests.e2e.conftest import (
-    DOCSTRING_MISSING_APPROVALS,
-    DOCSTRING_MISSING_OBJECTIVE,
-    DOCSTRING_MISSING_TEST_STEPS,
     make_test_class_module,
     make_test_module,
 )
 
 
 class TestMandatorySectionsAreAccepted:
-    """All three mandatory sections (Objective, Approvals, Test steps) satisfy the linter."""
+    """All three mandatory sections (Objective, Approvals, Test steps) satisfy
+    the linter.
+    """
 
     def test_function_with_all_mandatory_sections_is_accepted(
         self, run_linter, write_test_file, ats_minimal_docstring
