@@ -87,6 +87,29 @@ jobs:
           fail_ci_if_error: false
           token: ${{ secrets.CODECOV_TOKEN }}
 
+  e2e-test:
+    name: End-to-end tests
+    needs: [prepare, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash -el {0}
+    env:
+      PIP_DEFAULT_TIMEOUT: 300
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Run e2e tests
+        run: |
+          pip install --timeout=300 tox
+          tox -e e2e
+
   integration-test:
     name: Integration test (Docker)
     needs: [prepare, test]
@@ -110,7 +133,14 @@ jobs:
         # Both tests will exit nonzero if the linter fails, causing the job to fail
 
   build:
-    needs: [prepare, test, integration-test]
+    needs: [prepare, test, e2e-test, integration-test]
+    # Run whenever all needed jobs either passed or were intentionally skipped
+    # (integration-test is skipped on schedule/workflow_dispatch events).
+    # Without this condition, GitHub Actions cascades the skip to build as well.
+    if: >-
+      always() &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
     name: Build on linux
     runs-on: ubuntu-latest
     strategy:
