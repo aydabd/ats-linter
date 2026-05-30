@@ -38,10 +38,10 @@ jobs:
       PIP_DEFAULT_TIMEOUT: 300
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with: {fetch-depth: 0}  # deep clone for setuptools-scm
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: 3.12
     - name: Run tox env ${{ matrix.tox-envs }}
@@ -64,11 +64,11 @@ jobs:
       PIP_DEFAULT_TIMEOUT: 300
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -99,10 +99,10 @@ jobs:
       PIP_DEFAULT_TIMEOUT: 300
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with: {fetch-depth: 0}
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.12
       - name: Run e2e tests
@@ -118,10 +118,10 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with: {fetch-depth: 0}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Build integration test image
         run: docker build --no-cache -f integration_test/Dockerfile -t ats-linter-integration .
       - name: Run CLI integration test
@@ -154,11 +154,11 @@ jobs:
       PIP_DEFAULT_TIMEOUT: 300
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.12
 
@@ -168,7 +168,7 @@ jobs:
           tox -e build
 
       - name: Upload distribution files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v8
         with:
           name: python-distribution-files
           path: dist/
@@ -185,14 +185,14 @@ jobs:
         shell: bash -el {0}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.12
       - name: Retrieve pre-built distribution files
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with: {name: python-distribution-files, path: dist/}
       - name: Publish Package
         env:
