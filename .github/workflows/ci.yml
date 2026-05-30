@@ -192,7 +192,7 @@ jobs:
         with:
           python-version: 3.12
       - name: Retrieve pre-built distribution files
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v7
         with: {name: python-distribution-files, path: dist/}
       - name: Publish Package
         env:
