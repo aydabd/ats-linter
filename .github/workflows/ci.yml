@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.12'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           file: ./coverage.xml
           flags: unittests
@@ -192,7 +192,7 @@ jobs:
         with:
           python-version: 3.12
       - name: Retrieve pre-built distribution files
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with: {name: python-distribution-files, path: dist/}
       - name: Publish Package
         env:
@@ -216,10 +216,10 @@ jobs:
         shell: bash -el {0}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
       - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v4
         with:
           channels: conda-forge
           auto-update-conda: false
