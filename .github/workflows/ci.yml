@@ -38,7 +38,7 @@ jobs:
       PIP_DEFAULT_TIMEOUT: 300
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with: {fetch-depth: 0}  # deep clone for setuptools-scm
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -64,7 +64,7 @@ jobs:
       PIP_DEFAULT_TIMEOUT: 300
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
 
       - name: Set up Python ${{ matrix.python-version }}
@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.12'
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         with:
           file: ./coverage.xml
           flags: unittests
@@ -99,7 +99,7 @@ jobs:
       PIP_DEFAULT_TIMEOUT: 300
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with: {fetch-depth: 0}
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -118,7 +118,7 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'push'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with: {fetch-depth: 0}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -154,7 +154,7 @@ jobs:
       PIP_DEFAULT_TIMEOUT: 300
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
 
       - name: Set up Python
@@ -185,7 +185,7 @@ jobs:
         shell: bash -el {0}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -216,7 +216,7 @@ jobs:
         shell: bash -el {0}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with: {fetch-depth: 0}  # deep clone for setuptools-scm
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v4
